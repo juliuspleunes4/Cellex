@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cellex - AI-Powered X-ray Analysis</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Cellex</h1>
+            <p class="tagline">AI for Early Insight</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <h2>Upload X-ray Image</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p class="upload-text">Click to upload or drag and drop</p>
+                        <p class="upload-hint">PNG, JPG, JPEG (max 16MB)</p>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+                
+                <div class="preview-section" id="previewSection" style="display: none;">
+                    <img id="imagePreview" alt="Uploaded image preview">
+                    <button class="btn btn-secondary" id="clearBtn">Clear Image</button>
+                </div>
+
+                <button class="btn btn-primary" id="analyzeBtn" disabled>Analyze Image</button>
+            </div>
+
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h2>Analysis Results</h2>
+                <div class="result-card">
+                    <div class="result-header">
+                        <h3>Diagnosis</h3>
+                        <span class="result-badge" id="resultBadge"></span>
+                    </div>
+                    <div class="result-body">
+                        <div class="result-item">
+                            <label>Classification:</label>
+                            <span id="resultClass" class="result-value"></span>
+                        </div>
+                        <div class="result-item">
+                            <label>Confidence:</label>
+                            <span id="resultConfidence" class="result-value"></span>
+                        </div>
+                        <div class="probability-bars">
+                            <h4>Probability Distribution</h4>
+                            <div class="prob-item">
+                                <label>Normal:</label>
+                                <div class="prob-bar-container">
+                                    <div class="prob-bar prob-bar-normal" id="normalBar"></div>
+                                    <span class="prob-value" id="normalValue"></span>
+                                </div>
+                            </div>
+                            <div class="prob-item">
+                                <label>Potentially Cancerous:</label>
+                                <div class="prob-bar-container">
+                                    <div class="prob-bar prob-bar-cancerous" id="cancerousBar"></div>
+                                    <span class="prob-value" id="cancerousValue"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="disclaimer">
+                    <strong>⚠️ Disclaimer:</strong> This is a demonstration tool and should not be used for actual medical diagnosis. 
+                    Always consult with qualified healthcare professionals for medical advice.
+                </div>
+            </div>
+
+            <div class="loading" id="loadingIndicator" style="display: none;">
+                <div class="spinner"></div>
+                <p>Analyzing image...</p>
+            </div>
+
+            <div class="error-message" id="errorMessage" style="display: none;">
+                <span class="error-icon">⚠️</span>
+                <span id="errorText"></span>
+            </div>
+        </main>
+
+        <footer>
+            <p>Cellex AI Healthcare Platform</p>
+            <p class="footer-note">This is a demonstration project for educational purposes only</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
