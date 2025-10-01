@@ -40,13 +40,15 @@ env/
 *.h5
 *.pkl
 *.joblib
+ml_model/models/
 
 # Datasets
-ml_model/datasets/*.jpg
-ml_model/datasets/*.jpeg
-ml_model/datasets/*.png
-ml_model/datasets/*.dcm
-ml_model/datasets/*.npy
+ml_model/datasets/
+*.jpg
+*.jpeg
+*.png
+*.dcm
+*.npy
 
 # Node.js
 node_modules/
