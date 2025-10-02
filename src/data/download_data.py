@@ -14,6 +14,13 @@ import sys
 import json
 import shutil
 
+try:
+    from colorama import Fore, Style
+except ImportError:
+    class MockColor:
+        YELLOW = RESET_ALL = ""
+    Fore = Style = MockColor()
+
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
@@ -280,8 +287,8 @@ def main():
     # Display dataset information
     downloader.display_dataset_info()
     
-    # Ask user for confirmation
-    print(f"\n{downloader.logger.colors['YELLOW']}Do you want to download all datasets? (y/N): {downloader.logger.colors['RESET']}", end="")
+    # Ask user for confirmation  
+    print(f"\n{Fore.YELLOW}Do you want to download all datasets? (y/N): {Style.RESET_ALL}", end="")
     response = input().strip().lower()
     
     if response in ['y', 'yes']:

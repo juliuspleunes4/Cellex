@@ -182,15 +182,26 @@ class CellexConfig:
         """Save configuration to YAML file."""
         import yaml
         
+        def convert_tuples_to_lists(obj):
+            """Convert tuples to lists recursively for YAML serialization."""
+            if isinstance(obj, dict):
+                return {k: convert_tuples_to_lists(v) for k, v in obj.items()}
+            elif isinstance(obj, tuple):
+                return list(obj)
+            elif isinstance(obj, list):
+                return [convert_tuples_to_lists(item) for item in obj]
+            else:
+                return obj
+        
         config_dict = {
             'project_name': self.project_name,
             'version': self.version,
             'seed': self.seed,
-            'data': self.data.__dict__,
-            'model': self.model.__dict__,
-            'training': self.training.__dict__,
-            'inference': self.inference.__dict__,
-            'logging': self.logging.__dict__
+            'data': convert_tuples_to_lists(self.data.__dict__),
+            'model': convert_tuples_to_lists(self.model.__dict__),
+            'training': convert_tuples_to_lists(self.training.__dict__),
+            'inference': convert_tuples_to_lists(self.inference.__dict__),
+            'logging': convert_tuples_to_lists(self.logging.__dict__)
         }
         
         with open(path, 'w') as f:
@@ -212,6 +223,9 @@ class CellexConfig:
         # Update sub-configs
         if 'data' in config_dict:
             for key, value in config_dict['data'].items():
+                # Convert image_size list back to tuple
+                if key == 'image_size' and isinstance(value, list):
+                    value = tuple(value)
                 setattr(config.data, key, value)
         
         if 'model' in config_dict:
