@@ -95,8 +95,67 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
+# Medical Data - NEVER commit real patient data
+data/raw/
+data/processed/
+*.dcm
+*.nii
+*.nii.gz
+
+# Machine Learning Models & Training Artifacts
+models/
+*.pth
+*.pt
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+checkpoints/
+logs/
+runs/
+tensorboard/
+wandb/
+mlruns/
+.mlflow/
+
+# Large Files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Experiment Results
+results/
+experiments/
+outputs/
+
+# Kaggle credentials
+kaggle.json
+.kaggle/
+
+# Configuration files (keep default template, ignore local overrides)
+config/local_config.yaml
+config/production_config.yaml
+config/config_*.yaml
+!config/config.yaml  # Keep default template in version control
+
+# Configuration secrets
+*.secret
+*.key
+config/secrets/
+
+# System & IDE
+*.tmp
+*.temp
+*~
+.swp
+*.pid
+
 # Other
 *.log
 
 .venv
 .venv/
+
+config/config.yaml
