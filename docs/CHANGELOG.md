@@ -10,6 +10,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Minor version** (second digit) is incremented and patch reset when a new feature is added (e.g., `2.4.6` → `2.5.0`).
 > - **Patch version** (third digit) is incremented for updates or changes to existing features (e.g., `2.4.5` → `2.4.6`).
 
+## [2.4.0] - 2025-10-03
+
+### 🚀 **RELEASE AUTOMATION: GitHub Release Creator**
+
+### ✨ Added
+- **Automated GitHub Release System**:
+  - Professional PowerShell script (`create-release.ps1`) for automated GitHub releases
+  - Command-line version specification with semantic versioning validation (e.g., `.\create-release.ps1 -Version "x.x.x"`)
+  - Intelligent GitHub CLI detection across multiple installation paths
+  - Automatic authentication verification and guided setup
+  
+- **Smart Model Packaging**:
+  - Automatic detection of best available model file from `models/` directory
+  - Version-based model renaming (e.g., `best_model_epoch_2.pth` → `cellex-v2.4.0.pth`)
+  - Generated `MODEL_INFO.md` with complete performance metrics and usage instructions
+  - Medical-grade model documentation with 98.45% balanced accuracy specifications
+
+- **Complete Release Bundle**:
+  - Automated packaging of all essential project files (source code, documentation, tests, configuration)
+  - Release notes extraction from `CHANGELOG.md` with version-specific content parsing
+  - Professional ZIP archive creation (`cellex-v{VERSION}.zip`) for distribution
+  - GitHub release creation with proper tagging and asset upload
+
+- **Advanced Release Options**:
+  - Draft release support with `--Draft` parameter for review before publication  
+  - Prerelease marking with `--Prerelease` parameter for beta versions
+  - Custom model path specification with `--ModelPath` parameter
+  - Comprehensive error handling and cleanup procedures
+
+- **Release Documentation**:
+  - Complete usage guide (`RELEASE_GUIDE.md`) with examples and troubleshooting
+  - Professional release workflow documentation
+  - GitHub CLI setup and authentication guidance
+
+### 🏆 **Release Infrastructure**
+- **Professional Deployment Pipeline**: Complete automation from code to GitHub release
+- **Version Management**: Semantic versioning compliance with validation
+- **Asset Management**: Intelligent model versioning and comprehensive file packaging
+- **Documentation**: Auto-generated model specifications and usage instructions
+
+### 🎯 **Developer Experience**
+- **One-Command Release**: Single PowerShell command creates complete GitHub release
+- **Intelligent Detection**: Automatic GitHub CLI and model file discovery
+- **Error Prevention**: Comprehensive prerequisite validation and guided fixes
+- **Clean Workflow**: Automated cleanup with optional file retention
+
 ## [2.3.0] - 2025-10-03
 
 ### 🎉 **BREAKTHROUGH: OVERFITTING PROBLEM COMPLETELY SOLVED - 98.45% BALANCED ACCURACY ACHIEVED**

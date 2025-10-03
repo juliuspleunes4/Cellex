@@ -1,0 +1,2 @@
+# The purpose of this .gitkeep file is to ensure that Git tracks the empty 'releases' folder.
+# Git does not track empty folders by default, so placing this file inside the folder allows it to be committed.
