@@ -26,7 +26,6 @@ from src.data.data_loader import CellexTransforms
 from config.config import get_config
 
 try:
-    import gradcam
     from pytorch_grad_cam import GradCAM
     from pytorch_grad_cam.utils.image import show_cam_on_image
     GRADCAM_AVAILABLE = True

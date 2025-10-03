@@ -10,8 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Minor version** (second digit) is incremented and patch reset when a new feature is added (e.g., `2.4.6` → `2.5.0`).
 > - **Patch version** (third digit) is incremented for updates or changes to existing features (e.g., `2.4.5` → `2.4.6`).
 
-## [Unreleased]
-
 ## [2.0.0] - 2025-10-03
 
 ### 🎯 Added
