@@ -111,29 +111,29 @@ def validate_dataset(data_dir: Path) -> Dict[str, Any]:
 
 def print_dataset_info(validation_results: Dict[str, Any]):
     """Print detailed dataset information."""
-    print("\n" + "="*60)
-    print("📊 DATASET VALIDATION RESULTS")
-    print("="*60)
+    safe_print("\n" + "="*60)
+    safe_print("DATASET VALIDATION RESULTS")
+    safe_print("="*60)
     
     if validation_results['valid']:
-        print("✅ Dataset validation: PASSED")
+        safe_print("Dataset validation: PASSED")
     else:
-        print("❌ Dataset validation: FAILED")
+        safe_print("Dataset validation: FAILED")
         for error in validation_results['errors']:
-            print(f"   • {error}")
+            safe_print(f"   - {error}")
         return
     
-    print(f"\n📁 Dataset Statistics:")
-    print(f"   Training Set:")
-    print(f"     • Healthy images: {validation_results['train_healthy']:,}")
-    print(f"     • Cancer images:  {validation_results['train_cancer']:,}")
-    print(f"   Validation Set:")
-    print(f"     • Healthy images: {validation_results['val_healthy']:,}")
-    print(f"     • Cancer images:  {validation_results['val_cancer']:,}")
-    print(f"   Test Set:")
-    print(f"     • Healthy images: {validation_results['test_healthy']:,}")
-    print(f"     • Cancer images:  {validation_results['test_cancer']:,}")
-    print(f"\n📈 Total Images: {validation_results['total']:,}")
+    safe_print(f"\nDataset Statistics:")
+    safe_print(f"   Training Set:")
+    safe_print(f"     - Healthy images: {validation_results['train_healthy']:,}")
+    safe_print(f"     - Cancer images:  {validation_results['train_cancer']:,}")
+    safe_print(f"   Validation Set:")
+    safe_print(f"     - Healthy images: {validation_results['val_healthy']:,}")
+    safe_print(f"     - Cancer images:  {validation_results['val_cancer']:,}")
+    safe_print(f"   Test Set:")
+    safe_print(f"     - Healthy images: {validation_results['test_healthy']:,}")
+    safe_print(f"     - Cancer images:  {validation_results['test_cancer']:,}")
+    safe_print(f"\nTotal Images: {validation_results['total']:,}")
     
     # Calculate class balance
     total_healthy = (validation_results['train_healthy'] + 
@@ -146,28 +146,28 @@ def print_dataset_info(validation_results: Dict[str, Any]):
     if total_healthy + total_cancer > 0:
         healthy_ratio = total_healthy / (total_healthy + total_cancer) * 100
         cancer_ratio = total_cancer / (total_healthy + total_cancer) * 100
-        print(f"📊 Class Distribution:")
-        print(f"     • Healthy: {healthy_ratio:.1f}% ({total_healthy:,} images)")
-        print(f"     • Cancer:  {cancer_ratio:.1f}% ({total_cancer:,} images)")
+        safe_print(f"Class Distribution:")
+        safe_print(f"     - Healthy: {healthy_ratio:.1f}% ({total_healthy:,} images)")
+        safe_print(f"     - Cancer:  {cancer_ratio:.1f}% ({total_cancer:,} images)")
 
 def setup_training_environment():
     """Setup and validate training environment."""
-    print("🔧 TRAINING ENVIRONMENT SETUP")
-    print("="*60)
+    safe_print("TRAINING ENVIRONMENT SETUP")
+    safe_print("="*60)
     
     # Check dependencies
-    print("📦 Checking dependencies...")
+    safe_print("Checking dependencies...")
     missing_modules = check_dependencies()
     if missing_modules:
-        print(f"❌ Missing dependencies: {', '.join(missing_modules)}")
-        print("💡 Install with: pip install -r requirements.txt")
+        safe_print(f"Missing dependencies: {', '.join(missing_modules)}")
+        safe_print("Install with: pip install -r requirements.txt")
         return False
-    print("✅ All dependencies available")
+    safe_print("All dependencies available")
     
     # Setup paths
     project_root, src_path = setup_paths()
-    print(f"📁 Project root: {project_root}")
-    print(f"📁 Source path: {src_path}")
+    safe_print(f"Project root: {project_root}")
+    safe_print(f"Source path: {src_path}")
     
     return True
 
@@ -205,11 +205,20 @@ def save_training_config(config, results_dir: Path):
     
     print(f"💾 Configuration saved: {config_file}")
 
+def safe_print(text):
+    """Print text with fallback for encoding issues."""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        # Fallback to ASCII-only version
+        fallback = text.encode('ascii', 'ignore').decode('ascii')
+        print(fallback)
+
 def list_checkpoints():
     """List all available checkpoints."""
     checkpoints_dir = Path("checkpoints")
     if not checkpoints_dir.exists():
-        print("❌ No checkpoints directory found")
+        safe_print("No checkpoints directory found")
         return []
     
     # Find all checkpoint files
@@ -217,11 +226,11 @@ def list_checkpoints():
     latest_checkpoint = checkpoints_dir / "latest_checkpoint.pth"
     
     if not checkpoint_files and not latest_checkpoint.exists():
-        print("📂 No checkpoints found")
+        safe_print("No checkpoints found")
         return []
     
-    print("\n📂 AVAILABLE CHECKPOINTS")
-    print("="*50)
+    safe_print("\nAVAILABLE CHECKPOINTS")
+    safe_print("="*50)
     
     checkpoints = []
     
@@ -232,10 +241,10 @@ def list_checkpoints():
             checkpoint_data = torch.load(latest_checkpoint, map_location='cpu')
             epoch = checkpoint_data.get('epoch', 'unknown')
             accuracy = checkpoint_data.get('best_val_accuracy', 0.0)
-            print(f"🔄 latest_checkpoint.pth (Epoch {epoch}, Best Acc: {accuracy:.2f}%)")
+            safe_print(f"-> latest_checkpoint.pth (Epoch {epoch}, Best Acc: {accuracy:.2f}%)")
             checkpoints.append(('latest', latest_checkpoint, epoch, accuracy))
         except:
-            print(f"🔄 latest_checkpoint.pth (corrupted)")
+            safe_print(f"-> latest_checkpoint.pth (corrupted)")
     
     # List epoch checkpoints
     checkpoint_files.sort(key=lambda x: int(x.stem.split('_')[-1]))
@@ -245,13 +254,13 @@ def list_checkpoints():
             checkpoint_data = torch.load(checkpoint_file, map_location='cpu')
             epoch = checkpoint_data.get('epoch', 'unknown')
             accuracy = checkpoint_data.get('best_val_accuracy', 0.0)
-            print(f"📁 {checkpoint_file.name} (Epoch {epoch}, Best Acc: {accuracy:.2f}%)")
+            safe_print(f"-> {checkpoint_file.name} (Epoch {epoch}, Best Acc: {accuracy:.2f}%)")
             checkpoints.append((checkpoint_file.name, checkpoint_file, epoch, accuracy))
         except:
-            print(f"❌ {checkpoint_file.name} (corrupted)")
+            safe_print(f"-> {checkpoint_file.name} (corrupted)")
     
-    print(f"\n💡 Use --resume <checkpoint> to resume training")
-    print(f"💡 Use --resume latest to resume from most recent checkpoint")
+    safe_print(f"\nUse --resume <checkpoint> to resume training")
+    safe_print(f"Use --resume latest to resume from most recent checkpoint")
     
     return checkpoints
 
@@ -268,7 +277,7 @@ def resolve_checkpoint_path(resume_arg):
         if latest_path.exists():
             return str(latest_path)
         else:
-            print("❌ No latest checkpoint found")
+            safe_print("No latest checkpoint found")
             return None
     
     # Handle direct path
@@ -288,7 +297,7 @@ def resolve_checkpoint_path(resume_arg):
     if checkpoint_path.exists():
         return str(checkpoint_path)
     
-    print(f"❌ Checkpoint not found: {resume_arg}")
+    safe_print(f"Checkpoint not found: {resume_arg}")
     return None
 
 def main():
@@ -310,12 +319,12 @@ def main():
         list_checkpoints()
         return True
     
-    print("🏥 CELLEX CANCER DETECTION SYSTEM")
-    print("="*60)
-    print("🎯 Mission: Train AI to detect cancer in medical images")
-    print("🔬 Classification: Binary (Healthy vs Cancer)")
-    print("🧠 Model: Deep Learning with Attention Mechanisms")
-    print("="*60)
+    safe_print("CELLEX CANCER DETECTION SYSTEM")
+    safe_print("="*60)
+    safe_print("Mission: Train AI to detect cancer in medical images")
+    safe_print("Classification: Binary (Healthy vs Cancer)")
+    safe_print("Model: Deep Learning with Attention Mechanisms")
+    safe_print("="*60)
     
     start_time = time.time()
     
@@ -351,7 +360,7 @@ def main():
         else:
             data_dir = Path(config.data.processed_data_dir) / "unified"
         
-        print(f"\n📁 Using dataset: {data_dir}")
+        safe_print(f"\nUsing dataset: {data_dir}")
         
         # Validate dataset
         if not data_dir.exists():
@@ -369,12 +378,12 @@ def main():
             return False
         
         if args.validate_only:
-            print("\n✅ Dataset validation completed successfully!")
+            safe_print("\nDataset validation completed successfully!")
             return True
         
         # Create results directory
         results_dir = create_results_directory()
-        print(f"\n📁 Results directory: {results_dir}")
+        safe_print(f"\nResults directory: {results_dir}")
         
         # Save configuration
         save_training_config(config, results_dir)
@@ -401,7 +410,7 @@ def main():
         # Start training
         print("\n🏋️ STARTING TRAINING")
         print("="*40)
-        print("🎯 Goal: Learn to distinguish healthy tissue from cancer")
+        safe_print("Goal: Learn to distinguish healthy tissue from cancer")
         print("📊 Metrics: Accuracy, Precision, Recall, F1-Score")
         print("💾 Auto-save: Best model will be saved automatically")
         print("⏱️  Time: Training time will vary based on dataset size")
@@ -436,10 +445,10 @@ def main():
         print("="*60)
         print(f"⏱️  Total Training Time: {hours}h {minutes}m {seconds}s")
         print(f"🏆 Best Accuracy: {training_results.get('best_accuracy', 0):.4f}")
-        print(f"📁 Results saved to: {results_dir}")
-        print(f"🧠 Best model saved automatically")
-        print(f"💾 Checkpoints available for future training")
-        print("\n🔬 Your cancer detection AI is ready!")
+        safe_print(f"Results saved to: {results_dir}")
+        safe_print(f"Best model saved automatically")
+        safe_print(f"Checkpoints available for future training")
+        safe_print("\nYour cancer detection AI is ready!")
         print("💡 Test it with: python predict_image.py <medical_image.jpg>")
         print("💡 View checkpoints: python train.py --list-checkpoints")
         

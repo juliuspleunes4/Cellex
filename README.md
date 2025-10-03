@@ -1,4 +1,22 @@
-# 🏥 Cellex Medical AI
+# 🏥 Cellex
+
+[![Official Website](https://img.shields.io/badge/🌐%20Official%20Website-www.cellex.cc-4A90E2?style=for-the-badge&logo=globe&logoColor=white)](https://www.cellex.cc)
+<br>
+
+<br>
+
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+
+<br>
+
+<br>
+![Tests](https://img.shields.io/badge/tests-9%2F9%20passing-green)
+![Coverage](https://img.shields.io/badge/coverage-100%25-green)
+![Version](https://img.shields.io/badge/version-2.1.0-%2338257d?style=flat&labelColor=38257d&color=38257d)
+
+<p align="center">
+    <img src="assets/cellex.png" alt="Caesar Logo" width="125" align="left">
+</p>
 
 ## Leading the Future of Diagnostic Imaging
 
@@ -7,8 +25,6 @@
 ---
 
 ## 🌟 Our Mission
-
-*#### Common Development Issues
 
 #### Training Issues
 ```bash

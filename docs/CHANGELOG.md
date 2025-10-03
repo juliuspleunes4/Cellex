@@ -10,6 +10,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Minor version** (second digit) is incremented and patch reset when a new feature is added (e.g., `2.4.6` → `2.5.0`).
 > - **Patch version** (third digit) is incremented for updates or changes to existing features (e.g., `2.4.5` → `2.4.6`).
 
+## [2.1.1] - 2025-10-03
+
+### 🐛 Fixed
+- **Console Encoding Issues**: Fixed Unicode encoding errors in Windows console output
+- **Test Suite Reliability**: Updated all test cases to handle encoding issues gracefully
+- **Checkpoint System**: All checkpoint functionality now works correctly in Windows environment
+
+### 🔧 Changed
+- **Safe Print Function**: Added encoding-safe print function for Windows compatibility
+- **Emoji Handling**: Replaced emoji characters with text equivalents for broader compatibility
+
+## [2.1.0] - 2025-10-03
+
+### 🎯 Added
+- **Comprehensive Test Suite**:
+  - Full pipeline testing (data, training, checkpoints, inference)
+  - Master test runner with quick and comprehensive modes
+  - Environment validation and dependency checking
+  - Individual component testing with detailed reporting
+  - CI/CD integration support with proper exit codes
+
+### 📁 Files Added
+- `tests/test_data_pipeline.py` - Dataset download and validation testing
+- `tests/test_training_pipeline.py` - Training components and model testing
+- `tests/test_inference_pipeline.py` - Prediction and inference testing
+- `tests/run_all_tests.py` - Master test runner for comprehensive validation
+- `tests/README.md` - Testing framework documentation
+
+## [2.0.1] - 2025-10-03
+
+### 🐛 Fixed
+- **Import Resolution Error**: Fixed "could not be resolved" error in `src/inference/predict.py` by removing incorrect `import gradcam` statement
+
 ## [2.0.0] - 2025-10-03
 
 ### 🎯 Added
