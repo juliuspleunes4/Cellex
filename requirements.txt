@@ -2,8 +2,12 @@
 # CELLEX CANCER DETECTION SYSTEM - REQUIREMENTS
 # ===================================================================
 # Core AI/ML Framework
-torch>=2.0.0
-torchvision>=0.15.0
+
+# PyTorch nightly with CUDA 12.8 for sm_120 GPU support (RTX 50xx series)
+--extra-index-url https://download.pytorch.org/whl/nightly/cu128
+torch>=2.10.0.dev20251003+cu128
+torchvision>=0.25.0.dev20251003+cu128
+torchaudio>=2.8.0.dev20251003+cu128
 tensorflow>=2.13.0
 keras>=2.13.0
 
