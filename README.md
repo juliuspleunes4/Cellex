@@ -10,7 +10,7 @@
 ![Version](https://img.shields.io/badge/version-2.2.0-%2338257d?style=flat&labelColor=38257d&color=38257d)
 
 <p align="center">
-    <img src="assets/cellex.png" alt="Caesar Logo" width="125" align="left">
+    <img src="assets/Cellex.png" alt="Caesar Logo" width="125" align="left">
 </p>
 
 ## Leading the Future of Diagnostic Imaging
