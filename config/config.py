@@ -48,7 +48,7 @@ class ModelConfig:
     """Model architecture configuration."""
     
     # Architecture
-    backbone: str = "efficientnet-b0"
+    backbone: str = "efficientnet_b0"
     num_classes: int = 2  # Normal, Cancer
     dropout_rate: float = 0.2
     
@@ -63,7 +63,7 @@ class ModelConfig:
     def __post_init__(self):
         if self.ensemble_models is None:
             self.ensemble_models = [
-                "efficientnet-b0",
+                "efficientnet_b0",
                 "resnet50",
                 "densenet121"
             ]
@@ -129,8 +129,8 @@ class LoggingConfig:
     """Logging and monitoring configuration."""
     
     # Experiment tracking
-    use_mlflow: bool = True
-    use_wandb: bool = True
+    use_mlflow: bool = False
+    use_wandb: bool = False
     experiment_name: str = "cellex_cancer_detection"
     
     # Logging levels
