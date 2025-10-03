@@ -244,15 +244,53 @@ python train.py --model densenet121        # DenseNet-121 architecture
 ```
 
 #### Advanced Training Features
-```bash
-# Resume interrupted training
-python train.py --resume models/checkpoint_epoch_25.pth
 
-# Combine multiple options
+##### Checkpoint & Resume System 💾
+The training system includes a robust checkpoint and resume system for long training sessions:
+
+```bash
+# List all available checkpoints with details
+python train.py --list-checkpoints
+
+# Resume from latest checkpoint (automatic detection)
+python train.py --resume latest
+
+# Resume from specific checkpoint
+python train.py --resume checkpoint_epoch_25.pth
+python train.py --resume checkpoints/checkpoint_epoch_50.pth
+```
+
+**Automatic Checkpoint Features:**
+- 🔄 **Auto-save every 5 epochs**: Progress never lost
+- 💾 **Latest checkpoint**: `checkpoints/latest_checkpoint.pth` always points to most recent
+- 🛡️ **Emergency save**: Ctrl+C triggers immediate checkpoint before exit
+- 📊 **Complete state**: Model weights, optimizer, scheduler, training history preserved
+- 🎯 **Smart resume**: Continues exactly where training left off
+
+**Checkpoint Files Created:**
+```
+checkpoints/
+├── latest_checkpoint.pth          # Always points to most recent
+├── checkpoint_epoch_5.pth         # Saved every 5 epochs
+├── checkpoint_epoch_10.pth
+└── checkpoint_epoch_15.pth
+```
+
+##### Production Training Examples
+```bash
+# Long training sessions (safe to interrupt anytime)
 python train.py --epochs 200 --batch-size 16 --lr 0.0005 --model resnet50
 
 # Production training with custom data
 python train.py --data-dir /clinical/data --epochs 300 --batch-size 128
+
+# Interrupt training anytime with Ctrl+C (auto-saves)
+# Resume exactly where you left off:
+python train.py --resume latest
+
+# Train in multiple sessions for flexible scheduling
+python train.py --epochs 50        # Initial training
+python train.py --resume latest --epochs 100  # Continue later
 ```
 
 #### Model Comparison Guide
@@ -266,7 +304,8 @@ python train.py --data-dir /clinical/data --epochs 300 --batch-size 128
 - ✅ **Hardware Detection**: Automatically uses GPU if available, graceful CPU fallback
 - ✅ **Mixed Precision**: Faster training on compatible GPUs (automatic)
 - ✅ **Early Stopping**: Prevents overfitting with validation-based patience
-- ✅ **Model Checkpointing**: Best model saved automatically based on validation accuracy
+- ✅ **Smart Checkpointing**: Auto-save every 5 epochs + emergency saves on interruption
+- ✅ **Resume Training**: Complete state restoration from any checkpoint
 - ✅ **Progress Tracking**: Real-time metrics, loss curves, and performance monitoring
 - ✅ **Error Recovery**: Comprehensive error handling with detailed logging
 
@@ -657,7 +696,69 @@ Cellex Platform/
 
 **Always consult qualified healthcare professionals for medical decisions. Cellex assumes no liability for clinical decisions made using this platform.**
 
-## 📞 Contact & Support
+## �️ Troubleshooting & FAQ
+
+### Checkpoint & Resume Issues
+
+#### "No checkpoints found"
+```bash
+# First time training - no checkpoints exist yet
+python train.py  # Start fresh training
+```
+
+#### "Checkpoint not found: latest"  
+```bash
+# No previous training exists
+python train.py --list-checkpoints  # Check what's available
+python train.py                     # Start fresh training
+```
+
+#### "Corrupted checkpoint"
+```bash
+# Checkpoint file is damaged
+python train.py --list-checkpoints  # Find working checkpoint
+python train.py --resume checkpoint_epoch_15.pth  # Use older checkpoint
+```
+
+#### Training Interruption Recovery
+```bash
+# After system crash or unexpected shutdown:
+python train.py --list-checkpoints   # Check what's available
+python train.py --resume latest      # Continue from last save
+```
+
+### Common Training Issues
+
+#### GPU Memory Errors
+```bash
+# Reduce batch size for limited GPU memory
+python train.py --batch-size 16   # Or even smaller: --batch-size 8
+```
+
+#### Training Too Slow
+```bash
+# Increase batch size if you have sufficient GPU memory  
+python train.py --batch-size 64   # Or larger if your GPU supports it
+```
+
+#### Dataset Validation Failures
+```bash
+# Re-download and process datasets
+python src/data/download_data.py
+
+# Validate dataset structure  
+python train.py --validate-only
+```
+
+### Checkpoint Best Practices
+
+- 💡 **Always use `--resume latest`** when continuing work
+- 💡 **Save checkpoints frequently** (every 5 epochs by default)  
+- 💡 **Keep multiple checkpoints** for recovery from corruption
+- 💡 **Monitor disk space** - each checkpoint is ~100-500MB
+- 💡 **Use Ctrl+C to safely stop** training (auto-saves before exit)
+
+## �📞 Contact & Support
 
 ### Enterprise Sales
 - **Email**: [hello@cellex.cc](mailto:hello@cellex.cc)

@@ -15,6 +15,7 @@ from datetime import datetime
 from pathlib import Path
 import json
 import os
+import signal
 from typing import Dict, List, Tuple, Optional
 import sys
 
@@ -133,7 +134,7 @@ class EarlyStopping:
 class CellexTrainer:
     """Professional training system for Cellex cancer detection."""
     
-    def __init__(self, config=None):
+    def __init__(self, config=None, resume_from=None):
         self.config = config or get_config()
         self.logger = get_logger("CellexTrainer")
         
@@ -167,6 +168,13 @@ class CellexTrainer:
             'val_acc': [],
             'learning_rate': []
         }
+        
+        # Store resume path for later use
+        self.resume_from = resume_from
+        
+        # Setup graceful shutdown
+        self.interrupted = False
+        self.interrupt_save_vars = None
         
         # Initialize experiment tracking
         self._init_experiment_tracking()
@@ -215,17 +223,50 @@ class CellexTrainer:
         optimizer = self._create_optimizer(model)
         scheduler = self._create_scheduler(optimizer)
         
+        # Handle checkpoint resume
+        start_epoch = 1
+        if self.resume_from:
+            try:
+                resume_epoch = self.load_checkpoint(self.resume_from, model, optimizer, scheduler)
+                start_epoch = resume_epoch + 1
+                self.logger.info(f"🔄 Resuming training from epoch {start_epoch}")
+            except Exception as e:
+                self.logger.error(f"❌ Failed to resume from checkpoint: {str(e)}")
+                self.logger.info("🔄 Starting fresh training instead...")
+                start_epoch = 1
+        
         # Initialize early stopping
         early_stopping = EarlyStopping(
             patience=self.config.training.early_stopping_patience,
             min_delta=0.001
         )
         
+        # Setup graceful shutdown for interruption
+        def signal_handler(signum, frame):
+            self.logger.info("\n⚠️ Training interruption requested (Ctrl+C)")
+            self.interrupted = True
+            if self.interrupt_save_vars:
+                model_ref, optimizer_ref, scheduler_ref, current_epoch = self.interrupt_save_vars
+                self.logger.info(f"💾 Saving emergency checkpoint at epoch {current_epoch}")
+                self._save_checkpoint(model_ref, optimizer_ref, scheduler_ref, current_epoch)
+                self.logger.success("✅ Emergency checkpoint saved!")
+            self.logger.info("💡 You can resume training later with --resume latest")
+        
+        signal.signal(signal.SIGINT, signal_handler)
+        
         # Training loop
         self.logger.section("TRAINING LOOP")
         
-        for epoch in range(1, self.config.training.num_epochs + 1):
+        for epoch in range(start_epoch, self.config.training.num_epochs + 1):
             self.current_epoch = epoch
+            
+            # Store variables for emergency checkpoint
+            self.interrupt_save_vars = (model, optimizer, scheduler, epoch)
+            
+            # Check for interruption
+            if self.interrupted:
+                self.logger.info("🛑 Training stopped by user request")
+                break
             
             # Training phase
             train_metrics = self._train_epoch(model, train_loader, criterion, optimizer)
@@ -253,8 +294,8 @@ class CellexTrainer:
                 self.logger.info(f"🛑 Early stopping triggered at epoch {epoch}")
                 break
             
-            # Save checkpoint
-            if epoch % 10 == 0:
+            # Save checkpoint every 5 epochs and on the last epoch
+            if epoch % 5 == 0 or epoch == self.config.training.num_epochs:
                 self._save_checkpoint(model, optimizer, scheduler, epoch)
         
         # Final evaluation on test set
@@ -497,6 +538,64 @@ class CellexTrainer:
             'best_val_accuracy': self.best_val_accuracy,
             'training_history': self.training_history
         }, checkpoint_path)
+        
+        # Also save as "latest" for easy resuming
+        latest_path = self.checkpoint_dir / "latest_checkpoint.pth"
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'scheduler_state_dict': scheduler.state_dict() if scheduler else None,
+            'best_val_accuracy': self.best_val_accuracy,
+            'training_history': self.training_history
+        }, latest_path)
+    
+    def load_checkpoint(self, checkpoint_path: str, model: nn.Module, optimizer, scheduler=None):
+        """Load checkpoint and resume training."""
+        if not os.path.exists(checkpoint_path):
+            # Try to find the checkpoint in the checkpoints directory
+            if not checkpoint_path.startswith(str(self.checkpoint_dir)):
+                alt_path = self.checkpoint_dir / checkpoint_path
+                if alt_path.exists():
+                    checkpoint_path = str(alt_path)
+                else:
+                    raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
+        
+        self.logger.info(f"📂 Loading checkpoint from: {checkpoint_path}")
+        
+        try:
+            checkpoint = torch.load(checkpoint_path, map_location=self.device)
+            
+            # Load model state
+            model.load_state_dict(checkpoint['model_state_dict'])
+            
+            # Load optimizer state
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            
+            # Load scheduler state if available
+            if scheduler and checkpoint.get('scheduler_state_dict') is not None:
+                scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+            
+            # Restore training state
+            self.current_epoch = checkpoint['epoch']
+            self.best_val_accuracy = checkpoint.get('best_val_accuracy', 0.0)
+            self.training_history = checkpoint.get('training_history', {
+                'train_loss': [],
+                'val_loss': [],
+                'train_acc': [],
+                'val_acc': [],
+                'learning_rate': []
+            })
+            
+            self.logger.success(f"✅ Checkpoint loaded successfully!")
+            self.logger.info(f"📊 Resuming from epoch {self.current_epoch + 1}")
+            self.logger.info(f"🏆 Best validation accuracy so far: {self.best_val_accuracy:.2f}%")
+            
+            return self.current_epoch
+            
+        except Exception as e:
+            self.logger.error(f"❌ Failed to load checkpoint: {str(e)}")
+            raise
     
     def _log_final_results(self, results: Dict):
         """Log final training results."""

@@ -6,6 +6,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2025-10-03
+
+### 🎯 Added
+- **Comprehensive Checkpoint & Resume System**: 
+  - Automatic checkpoint saving every 5 epochs for granular recovery
+  - `--resume latest` command for easy continuation from most recent checkpoint
+  - `--resume <checkpoint>` for resuming from specific training points
+  - `--list-checkpoints` command to view all available checkpoints with details
+  - Emergency checkpoint saving on training interruption (Ctrl+C)
+  - Complete training state preservation (model weights, optimizer, scheduler, history)
+- **Enhanced Training Pipeline**:
+  - Graceful interruption handling with signal processors
+  - Smart checkpoint path resolution (latest, filename, full path)
+  - Robust error recovery for corrupted/missing checkpoints
+  - Dual checkpoint system: numbered epochs + latest checkpoint
+  - Progress preservation across training sessions
+- **Improved User Experience**:
+  - Clear progress messages and helpful training hints
+  - Comprehensive checkpoint troubleshooting in README
+  - User-friendly error messages with suggested actions
+  - Flexible checkpoint management with automatic cleanup options
+
+### 🔧 Changed
+- **Checkpoint Frequency**: Reduced from every 10 epochs to every 5 epochs for better recovery granularity
+- **Training Script**: Enhanced `train.py` with new CLI options for checkpoint management
+- **Documentation**: Expanded README with comprehensive checkpoint usage examples and troubleshooting
+
+### 🛠️ Technical Improvements
+- **Signal Handling**: Added SIGINT handlers for graceful shutdown with automatic checkpoint saving
+- **State Management**: Complete training state serialization including training history and best model tracking
+- **Error Handling**: Robust checkpoint validation and corruption detection
+- **File Organization**: Structured checkpoint directory with clear naming conventions
+
+### 📁 Files Added
+- `tests/test_checkpoints.py` - Comprehensive checkpoint functionality testing
+
+### 📁 Files Modified
+- `src/training/train.py` - Added checkpoint loading, saving, and resume functionality
+- `train.py` - Enhanced with checkpoint CLI options and user guidance
+- `README.md` - Added comprehensive checkpoint documentation and troubleshooting
+- `docs/CHANGELOG.md` - Updated with checkpoint system changes
+
+### 🔄 Training Workflow Improvements
+- **Long Training Sessions**: Can now safely pause and resume training without progress loss
+- **Flexible Scheduling**: Train in multiple sessions around resource availability
+- **Development Workflow**: Iterative training with easy checkpoint-based experimentation
+- **Production Robustness**: Automatic recovery from system crashes, power outages, or interruptions
+
 ## [1.0.0] - 2025-10-02
 
 ### 🎯 Added

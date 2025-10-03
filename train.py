@@ -205,6 +205,92 @@ def save_training_config(config, results_dir: Path):
     
     print(f"💾 Configuration saved: {config_file}")
 
+def list_checkpoints():
+    """List all available checkpoints."""
+    checkpoints_dir = Path("checkpoints")
+    if not checkpoints_dir.exists():
+        print("❌ No checkpoints directory found")
+        return []
+    
+    # Find all checkpoint files
+    checkpoint_files = list(checkpoints_dir.glob("checkpoint_epoch_*.pth"))
+    latest_checkpoint = checkpoints_dir / "latest_checkpoint.pth"
+    
+    if not checkpoint_files and not latest_checkpoint.exists():
+        print("📂 No checkpoints found")
+        return []
+    
+    print("\n📂 AVAILABLE CHECKPOINTS")
+    print("="*50)
+    
+    checkpoints = []
+    
+    # List latest checkpoint first
+    if latest_checkpoint.exists():
+        try:
+            import torch
+            checkpoint_data = torch.load(latest_checkpoint, map_location='cpu')
+            epoch = checkpoint_data.get('epoch', 'unknown')
+            accuracy = checkpoint_data.get('best_val_accuracy', 0.0)
+            print(f"🔄 latest_checkpoint.pth (Epoch {epoch}, Best Acc: {accuracy:.2f}%)")
+            checkpoints.append(('latest', latest_checkpoint, epoch, accuracy))
+        except:
+            print(f"🔄 latest_checkpoint.pth (corrupted)")
+    
+    # List epoch checkpoints
+    checkpoint_files.sort(key=lambda x: int(x.stem.split('_')[-1]))
+    for checkpoint_file in checkpoint_files:
+        try:
+            import torch
+            checkpoint_data = torch.load(checkpoint_file, map_location='cpu')
+            epoch = checkpoint_data.get('epoch', 'unknown')
+            accuracy = checkpoint_data.get('best_val_accuracy', 0.0)
+            print(f"📁 {checkpoint_file.name} (Epoch {epoch}, Best Acc: {accuracy:.2f}%)")
+            checkpoints.append((checkpoint_file.name, checkpoint_file, epoch, accuracy))
+        except:
+            print(f"❌ {checkpoint_file.name} (corrupted)")
+    
+    print(f"\n💡 Use --resume <checkpoint> to resume training")
+    print(f"💡 Use --resume latest to resume from most recent checkpoint")
+    
+    return checkpoints
+
+def resolve_checkpoint_path(resume_arg):
+    """Resolve checkpoint path from user argument."""
+    if not resume_arg:
+        return None
+    
+    checkpoints_dir = Path("checkpoints")
+    
+    # Handle "latest" keyword
+    if resume_arg.lower() == "latest":
+        latest_path = checkpoints_dir / "latest_checkpoint.pth"
+        if latest_path.exists():
+            return str(latest_path)
+        else:
+            print("❌ No latest checkpoint found")
+            return None
+    
+    # Handle direct path
+    if os.path.exists(resume_arg):
+        return resume_arg
+    
+    # Handle checkpoint filename
+    checkpoint_path = checkpoints_dir / resume_arg
+    if checkpoint_path.exists():
+        return str(checkpoint_path)
+    
+    # Try to match partial names
+    if not resume_arg.endswith('.pth'):
+        resume_arg += '.pth'
+    
+    checkpoint_path = checkpoints_dir / resume_arg
+    if checkpoint_path.exists():
+        return str(checkpoint_path)
+    
+    print(f"❌ Checkpoint not found: {resume_arg}")
+    return None
+
 def main():
     """Main training function with comprehensive error handling."""
     parser = argparse.ArgumentParser(description='Cellex Cancer Detection Training')
@@ -213,10 +299,16 @@ def main():
     parser.add_argument('--batch-size', type=int, help='Training batch size')
     parser.add_argument('--lr', type=float, help='Learning rate')
     parser.add_argument('--model', type=str, help='Model backbone (efficientnet_b0, resnet50, etc.)')
-    parser.add_argument('--resume', type=str, help='Resume training from checkpoint')
+    parser.add_argument('--resume', type=str, help='Resume training from checkpoint (use "latest" for most recent)')
+    parser.add_argument('--list-checkpoints', action='store_true', help='List available checkpoints')
     parser.add_argument('--validate-only', action='store_true', help='Only validate dataset')
     
     args = parser.parse_args()
+    
+    # Handle list checkpoints
+    if args.list_checkpoints:
+        list_checkpoints()
+        return True
     
     print("🏥 CELLEX CANCER DETECTION SYSTEM")
     print("="*60)
@@ -298,10 +390,13 @@ def main():
         print(f"Image Size: {config.data.image_size}")
         print(f"Augmentation: {config.data.augmentation_enabled}")
         
+        # Resolve resume checkpoint path
+        resume_path = resolve_checkpoint_path(args.resume) if args.resume else None
+        
         # Initialize trainer
         print("\n🚀 INITIALIZING TRAINER")
         print("="*40)
-        trainer = CellexTrainer(config)
+        trainer = CellexTrainer(config, resume_from=resume_path)
         
         # Start training
         print("\n🏋️ STARTING TRAINING")
@@ -312,8 +407,12 @@ def main():
         print("⏱️  Time: Training time will vary based on dataset size")
         
         # Resume from checkpoint if specified
-        if args.resume:
-            print(f"📂 Resuming from checkpoint: {args.resume}")
+        if resume_path:
+            print(f"📂 Resuming from checkpoint: {resume_path}")
+            print("💡 Press Ctrl+C anytime to safely stop and save progress")
+        else:
+            print("💡 Training will save checkpoints every 5 epochs")
+            print("💡 Press Ctrl+C anytime to safely stop and save progress")
         
         # Run training
         training_results = trainer.train(str(data_dir))
@@ -339,8 +438,10 @@ def main():
         print(f"🏆 Best Accuracy: {training_results.get('best_accuracy', 0):.4f}")
         print(f"📁 Results saved to: {results_dir}")
         print(f"🧠 Best model saved automatically")
+        print(f"💾 Checkpoints available for future training")
         print("\n🔬 Your cancer detection AI is ready!")
         print("💡 Test it with: python predict_image.py <medical_image.jpg>")
+        print("💡 View checkpoints: python train.py --list-checkpoints")
         
         return True
         
