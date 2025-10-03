@@ -8,7 +8,28 @@
 
 ## 🌟 Our Mission
 
-*Democratizing advanced medical AI to make world-class diagnostic capabilities accessible to healthcare providers globally, ultimately saving lives through earlier detection and more accurate diagnoses.*
+*#### Common Development Issues
+
+#### Training Issues
+```bash
+# Dataset not found error
+python verify_dataset.py          # Check if dataset is properly processed
+python src/data/download_data.py  # Re-download and process if needed
+
+# Out of memory errors  
+python train.py --batch-size 16   # Reduce batch size for limited GPU memory
+python train.py --batch-size 8    # Further reduce for very limited memory
+
+# Slow training
+python train.py --batch-size 64   # Increase batch size if you have sufficient GPU memory
+# Training automatically uses GPU if available
+
+# Check training progress
+# Look for files in: results/training_YYYYMMDD_HHMMSS/
+# Best model saved as: models/best_model_epoch_XX.pth
+```
+
+#### Kaggle API Setupocratizing advanced medical AI to make world-class diagnostic capabilities accessible to healthcare providers globally, ultimately saving lives through earlier detection and more accurate diagnoses.*
 
 ## 🔬 Platform Overview
 
@@ -193,6 +214,62 @@ python train.py --validate-only
 python train.py --lr 0.001 --model resnet50 --epochs 100
 ```
 
+### 🎛️ Complete Training Options Reference
+
+The `train.py` script provides comprehensive control over the cancer detection training process:
+
+#### Basic Commands
+```bash
+python train.py                    # Train with optimal default settings
+python train.py --help             # Show all available options  
+python train.py --validate-only    # Only validate dataset (no training)
+```
+
+#### Training Parameters
+```bash
+# Control training duration and batch processing
+python train.py --epochs 100       # Number of training epochs (default from config.yaml)
+python train.py --batch-size 64    # Batch size for training (default: 32)  
+python train.py --lr 0.0001        # Learning rate (default from config.yaml)
+
+# Data source configuration
+python train.py --data-dir /path/to/data    # Use custom dataset location
+```
+
+#### Model Architecture Selection
+```bash
+python train.py --model efficientnet_b0    # EfficientNet-B0 (default - recommended)
+python train.py --model resnet50           # ResNet-50 architecture
+python train.py --model densenet121        # DenseNet-121 architecture
+```
+
+#### Advanced Training Features
+```bash
+# Resume interrupted training
+python train.py --resume models/checkpoint_epoch_25.pth
+
+# Combine multiple options
+python train.py --epochs 200 --batch-size 16 --lr 0.0005 --model resnet50
+
+# Production training with custom data
+python train.py --data-dir /clinical/data --epochs 300 --batch-size 128
+```
+
+#### Model Comparison Guide
+| Model | Best For | Speed | Accuracy | Memory |
+|-------|----------|--------|----------|---------|
+| **efficientnet_b0** | General use, balanced performance | ⚡⚡⚡ | 🎯🎯🎯 | 💾💾 |
+| **resnet50** | Proven reliability, medical imaging | ⚡⚡ | 🎯🎯🎯 | 💾💾💾 |
+| **densenet121** | Limited data, feature reuse | ⚡ | 🎯🎯 | 💾💾💾💾 |
+
+#### Automatic Training Features
+- ✅ **Hardware Detection**: Automatically uses GPU if available, graceful CPU fallback
+- ✅ **Mixed Precision**: Faster training on compatible GPUs (automatic)
+- ✅ **Early Stopping**: Prevents overfitting with validation-based patience
+- ✅ **Model Checkpointing**: Best model saved automatically based on validation accuracy
+- ✅ **Progress Tracking**: Real-time metrics, loss curves, and performance monitoring
+- ✅ **Error Recovery**: Comprehensive error handling with detailed logging
+
 ### For Healthcare Institutions
 
 #### System Requirements
@@ -368,15 +445,30 @@ python -m pytest --cov=src tests/
 python -m pytest tests/integration/ -v
 ```
 
-### Environment Variables
+### Configuration Requirements
+
+#### Kaggle API (Required for Dataset Download)
+No environment variables needed. Use the standard `kaggle.json` file:
 
 ```bash
-# .env file (create locally, gitignored)
-KAGGLE_USERNAME=your_username
-KAGGLE_KEY=your_api_key
+# 1. Download kaggle.json from https://www.kaggle.com/settings/account  
+# 2. Place in the correct location:
+#    Windows: %USERPROFILE%\.kaggle\kaggle.json
+#    Linux/macOS: ~/.kaggle/kaggle.json
+# 3. Set permissions (Linux/macOS only):
+chmod 600 ~/.kaggle/kaggle.json
+```
+
+#### Optional Environment Variables
+```bash
+# GPU selection (if you have multiple GPUs)
+CUDA_VISIBLE_DEVICES=0,1  # Use specific GPUs
+
+# MLflow tracking (if using external MLflow server)
 MLFLOW_TRACKING_URI=http://localhost:5000
-WANDB_API_KEY=your_wandb_key
-CUDA_VISIBLE_DEVICES=0,1  # GPU selection
+
+# Note: Training works without any environment variables
+# All configuration is handled through config/config.yaml
 ```
 
 ### Common Development Issues
@@ -524,6 +616,8 @@ Cellex Platform/
 
 ## 📚 Resources & Documentation
 
+> Note: Some of these documentation files are coming soon...
+
 ### For Developers
 - **[API Documentation](docs/api/)** - Complete REST API reference
 - **[SDK Libraries](docs/sdk/)** - Python, R, and MATLAB integrations
@@ -583,5 +677,3 @@ Cellex Platform/
 
 **© 2025 Cellex AI. All rights reserved.**  
 *Advancing Healthcare Through Intelligent Technology*
-
-**Headquarters**: Mijdrecht, NL |
