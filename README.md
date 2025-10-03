@@ -49,10 +49,11 @@ Our proprietary **CellexNet™** architecture combines:
 - **Comprehensive Audit Trails** meeting regulatory requirements
 
 ### Data Sources & Validation
-Our models are trained exclusively on verified clinical datasets:
-- **NIH Clinical Center** - 112K+ chest X-rays with expert annotations
-- **Guangzhou Medical University** - 5.8K+ pneumonia cases  
-- **Stanford Medical Center** - 3K+ pulmonary abnormalities
+Our models are trained exclusively on verified cancer detection datasets:
+- **Lung Cancer Dataset** - 1K+ chest X-rays with cancer classifications (Benign/Malignant/Normal)
+- **Chest Cancer Detection** - 1.2K+ CT scans with clear tumor annotations (Cancer/Normal)
+- **Lung Nodule Analysis** - 800+ specialized nodule detection images (Nodule Present/Normal)
+- **Cancer Classification** - 500+ binary cancer vs healthy lung X-rays (Cancer/Healthy)
 - **Zero Synthetic Data** - Only real patient images used
 
 ## 🚀 Getting Started

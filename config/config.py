@@ -36,9 +36,10 @@ class DataConfig:
     def __post_init__(self):
         if self.datasets is None:
             self.datasets = [
-                "nih-chest-xrays/data",  # NIH Chest X-Ray Dataset
-                "paultimothymooney/chest-xray-pneumonia",  # Chest X-Ray Images
-                "kmader/pulmonary-chest-xray-abnormalities",  # Pulmonary abnormalities
+                "mohamedhanyyy/chest-ctscan-images",  # Chest CT-Scan Cancer Detection
+                "andrewmvd/lung-and-colon-cancer-histopathological-images",  # Lung Cancer Histopathological
+                "sartajbhuvaji/brain-tumor-classification-mri",  # Brain Tumor Classification
+                "kmader/skin-cancer-mnist-ham10000",  # Skin Cancer Classification
             ]
 
 

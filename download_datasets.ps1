@@ -73,24 +73,33 @@ try {
 
 # Show dataset information
 Write-Host ""
-Write-Host "${Blue}📊 MEDICAL DATASETS TO DOWNLOAD${Reset}" -ForegroundColor Blue
-Write-Host "${Blue}================================${Reset}" -ForegroundColor Blue
-Write-Host "${Yellow}1. NIH Chest X-Ray Dataset${Reset}"
-Write-Host "   • Source: nih-chest-xrays/data"
-Write-Host "   • Size: ~42 GB"
-Write-Host "   • Samples: 112,120+ chest X-rays"
-Write-Host ""
-Write-Host "${Yellow}2. Chest X-Ray Pneumonia${Reset}"
-Write-Host "   • Source: paultimothymooney/chest-xray-pneumonia"
-Write-Host "   • Size: ~1.2 GB"
-Write-Host "   • Samples: 5,863+ X-ray images"
-Write-Host ""
-Write-Host "${Yellow}3. Pulmonary Abnormalities${Reset}"
-Write-Host "   • Source: kmader/pulmonary-chest-xray-abnormalities"
+Write-Host "${Blue}📊 VERIFIED CANCER DETECTION DATASETS TO DOWNLOAD${Reset}" -ForegroundColor Blue
+Write-Host "${Blue}===============================================${Reset}" -ForegroundColor Blue
+Write-Host "${Yellow}1. Chest CT-Scan Cancer Detection${Reset}"
+Write-Host "   • Source: mohamedhanyyy/chest-ctscan-images"
 Write-Host "   • Size: ~0.8 GB"
-Write-Host "   • Samples: 3,000+ abnormality images"
+Write-Host "   • Samples: 1,000+ CT scans with tumor annotations"
+Write-Host "   • Classes: Cancer, Normal"
 Write-Host ""
-Write-Host "${Red}⚠️  TOTAL SIZE: ~44 GB${Reset}" -ForegroundColor Red
+Write-Host "${Yellow}2. Lung Cancer Histopathological Images${Reset}"
+Write-Host "   • Source: andrewmvd/lung-and-colon-cancer-histopathological-images"
+Write-Host "   • Size: ~1.2 GB"
+Write-Host "   • Samples: 25,000+ lung cancer tissue images"
+Write-Host "   • Classes: Benign tissue, Adenocarcinoma, Squamous cell carcinoma"
+Write-Host ""
+Write-Host "${Yellow}3. Brain Tumor Classification (MRI)${Reset}"
+Write-Host "   • Source: sartajbhuvaji/brain-tumor-classification-mri"
+Write-Host "   • Size: ~0.2 GB"
+Write-Host "   • Samples: 3,264+ brain MRI scans"
+Write-Host "   • Classes: No Tumor, Glioma, Meningioma, Pituitary"
+Write-Host ""
+Write-Host "${Yellow}4. Skin Cancer Classification${Reset}"
+Write-Host "   • Source: kmader/skin-cancer-mnist-ham10000"
+Write-Host "   • Size: ~2.5 GB"
+Write-Host "   • Samples: 10,015+ dermatoscopic images"
+Write-Host "   • Classes: 7 types including Melanoma, Basal cell carcinoma"
+Write-Host ""
+Write-Host "${Red}⚠️  TOTAL SIZE: ~4.7 GB${Reset}" -ForegroundColor Red
 Write-Host ""
 
 # Confirmation prompt
