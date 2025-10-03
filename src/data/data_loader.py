@@ -291,15 +291,15 @@ class CellexDataLoader:
             image_paths = []
             labels = []
             
-            # Normal class (label 0)
-            normal_path = split_path / "normal"
-            if normal_path.exists():
-                normal_images = list(normal_path.glob("*.jpg")) + \
-                              list(normal_path.glob("*.png")) + \
-                              list(normal_path.glob("*.jpeg"))
+            # Healthy class (label 0)
+            healthy_path = split_path / "healthy"
+            if healthy_path.exists():
+                healthy_images = list(healthy_path.glob("*.jpg")) + \
+                              list(healthy_path.glob("*.png")) + \
+                              list(healthy_path.glob("*.jpeg"))
                 
-                image_paths.extend([str(p) for p in normal_images])
-                labels.extend([0] * len(normal_images))
+                image_paths.extend([str(p) for p in healthy_images])
+                labels.extend([0] * len(healthy_images))
             
             # Cancer class (label 1)
             cancer_path = split_path / "cancer"
