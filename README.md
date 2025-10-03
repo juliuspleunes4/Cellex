@@ -4,7 +4,6 @@
 <br>
 
 <br>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" width="32" height="32"/>
 
 ![Tests](https://img.shields.io/badge/tests-9%2F9%20passing-green)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-green)
