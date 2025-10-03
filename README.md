@@ -641,7 +641,20 @@ Cellex Platform/
 
 **Always consult qualified healthcare professionals for medical decisions. Cellex assumes no liability for clinical decisions made using this platform.**
 
-## �📞 Contact & Support
+
+## 🙏 Acknowledgements
+
+We gratefully acknowledge the following contributors and resources that made the Cellex Cancer Detection Platform possible:
+
+- **Open-Source Libraries**: PyTorch, scikit-learn, NumPy, pandas, and related ML tools
+- **Medical Imaging Datasets**: Kaggle contributors for chest CT, histopathology, brain MRI, and skin cancer datasets
+- **Clinical Advisors**: Radiologists and oncologists who provided expert guidance
+- **Community Support**: Early testers, GitHub contributors, and healthcare partners
+- **Research Inspiration**: Academic publications in medical AI and diagnostic imaging
+
+Special thanks to all medical professionals and patients whose data and expertise drive innovation in cancer detection.
+
+## 📞 Contact & Support
 
 ### Enterprise Sales
 - **Email**: [hello@cellex.cc](mailto:hello@cellex.cc)
