@@ -15,7 +15,7 @@
 
 ## Leading the Future of Diagnostic Imaging
 
-**Cellex** is a pioneering medical technology company specializing in AI-powered diagnostic solutions for healthcare providers worldwide. Our flagship cancer detection platform leverages cutting-edge deep learning to assist radiologists in early cancer detection, improving patient outcomes through faster, more accurate diagnoses.
+### **Cellex** is a pioneering medical technology company specializing in AI-powered diagnostic solutions for healthcare providers worldwide. Our flagship cancer detection platform leverages cutting-edge deep learning to assist radiologists in early cancer detection, improving patient outcomes through faster, more accurate diagnoses.
 
 ---
 
