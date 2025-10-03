@@ -74,7 +74,7 @@ class TrainingConfig:
     """Training configuration."""
     
     # Training parameters
-    batch_size: int = 64  # Increased for better GPU utilization
+    batch_size: int = 128  # Maximized for RTX 5060 Ti (17.1GB VRAM)
     learning_rate: float = 1e-4
     num_epochs: int = 100
     early_stopping_patience: int = 10
@@ -135,7 +135,7 @@ class LoggingConfig:
     
     # Logging levels
     log_level: str = "INFO"
-    log_file: str = "logs/cellex.log"
+    log_file: str = "logs/training.log"
     
     # Metrics tracking
     track_gradients: bool = True

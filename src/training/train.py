@@ -141,7 +141,7 @@ class CellexTrainer:
     
     def __init__(self, config=None, resume_from=None):
         self.config = config or get_config()
-        self.logger = get_logger("CellexTrainer")
+        self.logger = get_logger("CellexTrainer", self.config.logging.log_file)
         
         # Set device
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -296,10 +296,11 @@ class CellexTrainer:
             # Log metrics
             self._log_epoch_results(epoch, train_metrics, val_metrics, optimizer.param_groups[0]['lr'])
             
-            # Save best model
+            # Save best model and checkpoint
             if val_metrics.get_accuracy() > self.best_val_accuracy:
                 self.best_val_accuracy = val_metrics.get_accuracy()
                 self._save_model(model, f"best_model_epoch_{epoch}.pth", val_metrics.get_accuracy())
+                self._save_best_checkpoint(model, optimizer, scheduler, epoch)
                 self.logger.success(f"[SYMBOL] New best model saved! Accuracy: {val_metrics.get_accuracy():.4f}")
             
             # Early stopping check
@@ -628,6 +629,19 @@ class CellexTrainer:
             'best_val_accuracy': self.best_val_accuracy,
             'training_history': self.training_history
         }, latest_path)
+    
+    def _save_best_checkpoint(self, model: nn.Module, optimizer, scheduler, epoch: int):
+        """Save best model checkpoint for resuming training from best state."""
+        best_checkpoint_path = self.checkpoint_dir / "best_checkpoint.pth"
+        
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'scheduler_state_dict': scheduler.state_dict() if scheduler else None,
+            'best_val_accuracy': self.best_val_accuracy,
+            'training_history': self.training_history
+        }, best_checkpoint_path)
     
     def load_checkpoint(self, checkpoint_path: str, model: nn.Module, optimizer, scheduler=None):
         """Load checkpoint and resume training."""
