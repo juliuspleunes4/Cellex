@@ -26,7 +26,7 @@
 
 ---
 
-> <span style="color:green"><strong>✅ Quick Note:</strong> Early Cellex models are already demonstrating <strong>99.2% accuracy</strong> in internal validation, ran on thousands of tests, highlighting strong potential for clinical deployment!</span>
+> <span style="color:green"><strong>✅ Quick Note:</strong> Early Cellex models are already demonstrating <strong>98.45% accuracy</strong> in internal validation, ran on thousands of tests, highlighting strong potential for clinical deployment!</span>
 
 ## 🌟 Our Mission
 
