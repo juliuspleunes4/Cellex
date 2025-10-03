@@ -303,6 +303,9 @@ python train.py --resume latest
 # Train in multiple sessions for flexible scheduling
 python train.py --epochs 50        # Initial training
 python train.py --resume latest --epochs 100  # Continue later
+
+# New: Enhanced real-time monitoring with GPU utilization
+# Shows: [########----------] 40.2% | Loss: 0.4532 | Acc: 89.3% | GPU: 5.2/8.0GB (65%)
 ```
 
 #### Model Comparison Guide
@@ -315,6 +318,9 @@ python train.py --resume latest --epochs 100  # Continue later
 #### Automatic Training Features
 - ✅ **Hardware Detection**: Automatically uses GPU if available, graceful CPU fallback
 - ✅ **Mixed Precision**: Faster training on compatible GPUs (automatic)
+- ✅ **Auto Batch Size Optimization**: Automatically scales batch size to maximize GPU utilization
+- ✅ **Real-Time Progress**: Live progress updates every 10 batches with GPU memory monitoring
+- ✅ **Optimized Data Loading**: Multi-worker data loading with persistent workers for maximum throughput
 - ✅ **Early Stopping**: Prevents overfitting with validation-based patience
 - ✅ **Smart Checkpointing**: Auto-save every 5 epochs + emergency saves on interruption
 - ✅ **Resume Training**: Complete state restoration from any checkpoint

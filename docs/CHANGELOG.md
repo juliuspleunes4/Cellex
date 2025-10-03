@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Minor version** (second digit) is incremented and patch reset when a new feature is added (e.g., `2.4.6` → `2.5.0`).
 > - **Patch version** (third digit) is incremented for updates or changes to existing features (e.g., `2.4.5` → `2.4.6`).
 
+## [2.1.3] - 2025-10-03
+
+### 🐛 Fixed
+- **Import Resolution**: Fixed import paths in `verify_dataset.py` for proper IDE resolution and script execution
+
 ## [2.1.2] - 2025-10-03
 
 ### 🎉 **MILESTONE: BULLETPROOF DEVELOPER SETUP ACHIEVED**

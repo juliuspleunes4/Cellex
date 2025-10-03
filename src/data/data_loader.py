@@ -4,6 +4,7 @@ CELLEX CANCER DETECTION SYSTEM - DATA PREPROCESSING
 Professional data loading and preprocessing pipeline.
 """
 
+import os
 import torch
 from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms as transforms
@@ -342,14 +343,19 @@ class CellexDataLoader:
         
         self.logger.subsection("CREATING DATA LOADERS")
         
+        # Optimize number of workers for better GPU utilization
+        optimal_workers = min(8, os.cpu_count() or 4)
+        
         # Training loader with shuffle
         train_loader = DataLoader(
             train_dataset,
             batch_size=batch_size,
             shuffle=True,
-            num_workers=4,
+            num_workers=optimal_workers,
             pin_memory=True,
-            drop_last=True
+            drop_last=True,
+            persistent_workers=True,  # Keep workers alive between epochs
+            prefetch_factor=2  # Prefetch more batches for better GPU utilization
         )
         
         # Validation loader
@@ -357,9 +363,11 @@ class CellexDataLoader:
             val_dataset,
             batch_size=batch_size,
             shuffle=False,
-            num_workers=4,
+            num_workers=optimal_workers,
             pin_memory=True,
-            drop_last=False
+            drop_last=False,
+            persistent_workers=True,
+            prefetch_factor=2
         )
         
         # Test loader
@@ -367,9 +375,11 @@ class CellexDataLoader:
             test_dataset,
             batch_size=batch_size,
             shuffle=False,
-            num_workers=4,
+            num_workers=optimal_workers,
             pin_memory=True,
-            drop_last=False
+            drop_last=False,
+            persistent_workers=True,
+            prefetch_factor=2
         )
         
         self.logger.success(f"[SUCCESS] Data loaders created (batch_size={batch_size})")
@@ -396,13 +406,14 @@ class CellexDataLoader:
         return torch.tensor(weights, dtype=torch.float32)
 
 
-def create_data_loaders(data_dir: Union[str, Path], config=None) -> Tuple[DataLoader, DataLoader, DataLoader]:
+def create_data_loaders(data_dir: Union[str, Path], config=None, batch_size: Optional[int] = None) -> Tuple[DataLoader, DataLoader, DataLoader]:
     """
     Convenience function to create all data loaders.
     
     Args:
         data_dir: Directory containing organized dataset
         config: Configuration object
+        batch_size: Override batch size from config
         
     Returns:
         Tuple of (train_loader, val_loader, test_loader)
@@ -414,7 +425,7 @@ def create_data_loaders(data_dir: Union[str, Path], config=None) -> Tuple[DataLo
     
     # Create data loaders
     train_loader, val_loader, test_loader = loader.create_data_loaders(
-        train_dataset, val_dataset, test_dataset
+        train_dataset, val_dataset, test_dataset, batch_size=batch_size
     )
     
     return train_loader, val_loader, test_loader

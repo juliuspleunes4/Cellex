@@ -74,7 +74,7 @@ class TrainingConfig:
     """Training configuration."""
     
     # Training parameters
-    batch_size: int = 32
+    batch_size: int = 64  # Increased for better GPU utilization
     learning_rate: float = 1e-4
     num_epochs: int = 100
     early_stopping_patience: int = 10
@@ -140,7 +140,7 @@ class LoggingConfig:
     # Metrics tracking
     track_gradients: bool = True
     log_images: bool = True
-    log_frequency: int = 100
+    log_frequency: int = 10  # More frequent updates for better dev experience
 
 
 @dataclass

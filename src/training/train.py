@@ -98,6 +98,11 @@ class CellexMetrics:
         denominator = self.true_negatives + self.false_positives
         return self.true_negatives / denominator if denominator > 0 else 0.0
     
+    @property
+    def avg_loss(self) -> float:
+        """Calculate average loss."""
+        return sum(self.losses) / len(self.losses) if self.losses else 0.0
+    
     def get_f1_score(self) -> float:
         """Calculate F1 score."""
         precision = self.get_precision()
@@ -241,6 +246,14 @@ class CellexTrainer:
             min_delta=0.001
         )
         
+        # Optimize batch size if GPU memory allows
+        if torch.cuda.is_available() and self.config.training.batch_size == 64:
+            optimized_batch_size = self._optimize_batch_size(model, train_loader.dataset)
+            if optimized_batch_size != self.config.training.batch_size:
+                self.logger.info(f"[STATS] Optimizing batch size from {self.config.training.batch_size} to {optimized_batch_size}")
+                # Recreate data loaders with optimized batch size
+                train_loader, val_loader, test_loader = create_data_loaders(data_dir, self.config, batch_size=optimized_batch_size)
+        
         # Setup graceful shutdown for interruption
         def signal_handler(signum, frame):
             self.logger.info("\n[WARNING] Training interruption requested (Ctrl+C)")
@@ -319,6 +332,51 @@ class CellexTrainer:
         self._log_final_results(results)
         return results
     
+    def _optimize_batch_size(self, model: nn.Module, dataset) -> int:
+        """Automatically optimize batch size based on GPU memory."""
+        if not torch.cuda.is_available():
+            return self.config.training.batch_size
+        
+        # Test different batch sizes to find optimal one
+        test_batch_sizes = [128, 96, 64, 48, 32, 16]
+        optimal_batch_size = self.config.training.batch_size
+        
+        model.train()
+        dummy_input = torch.randn(1, 3, *self.config.data.image_size, device=self.device)
+        
+        for batch_size in test_batch_sizes:
+            if batch_size <= self.config.training.batch_size:
+                continue
+                
+            try:
+                # Clear cache
+                torch.cuda.empty_cache()
+                
+                # Test batch
+                test_batch = dummy_input.expand(batch_size, -1, -1, -1)
+                
+                # Forward pass
+                with torch.no_grad():
+                    output = model(test_batch)
+                
+                # Check if we have enough memory (keep 1GB free)
+                memory_used = torch.cuda.memory_allocated() / 1024**3
+                memory_total = torch.cuda.get_device_properties(0).total_memory / 1024**3
+                
+                if memory_used < memory_total * 0.85:  # Use max 85% of GPU memory
+                    optimal_batch_size = batch_size
+                    self.logger.info(f"[STATS] GPU Memory: {memory_used:.1f}GB / {memory_total:.1f}GB ({memory_used/memory_total*100:.1f}%)")
+                    break
+                    
+            except RuntimeError as e:
+                if "out of memory" in str(e):
+                    torch.cuda.empty_cache()
+                    continue
+                else:
+                    raise e
+        
+        return optimal_batch_size
+    
     def _train_epoch(self, model: nn.Module, train_loader, criterion, optimizer) -> CellexMetrics:
         """Train for one epoch."""
         model.train()
@@ -347,12 +405,33 @@ class CellexTrainer:
             # Update metrics
             metrics.update(outputs, targets, loss.item())
             
-            # Log progress
+            # Log progress - more frequent and informative
             if batch_idx % self.config.logging.log_frequency == 0:
-                self.logger.progress(
-                    batch_idx, 
-                    len(train_loader),
-                    f"Training Epoch {self.current_epoch} - Loss: {loss.item():.4f}"
+                # Calculate current accuracy for real-time feedback
+                current_acc = metrics.get_accuracy() if metrics.total > 0 else 0.0
+                avg_loss = metrics.avg_loss if metrics.total > 0 else loss.item()
+                
+                # Create progress bar
+                progress = batch_idx / len(train_loader)
+                bar_length = 20
+                filled_length = int(bar_length * progress)
+                bar = '#' * filled_length + '-' * (bar_length - filled_length)
+                
+                # GPU memory info
+                gpu_info = ""
+                if torch.cuda.is_available():
+                    gpu_memory = torch.cuda.memory_allocated() / 1024**3
+                    gpu_total = torch.cuda.get_device_properties(0).total_memory / 1024**3
+                    gpu_percent = gpu_memory / gpu_total * 100
+                    gpu_info = f"GPU: {gpu_memory:.1f}/{gpu_total:.1f}GB ({gpu_percent:.0f}%)"
+                
+                self.logger.info(
+                    f"[PROGRESS] Epoch {self.current_epoch:2d} [{bar}] "
+                    f"{batch_idx:3d}/{len(train_loader):3d} "
+                    f"({100.0 * progress:5.1f}%) | "
+                    f"Loss: {avg_loss:.4f} | "
+                    f"Acc: {current_acc:.2%}" + 
+                    (f" | {gpu_info}" if gpu_info else "")
                 )
         
         return metrics

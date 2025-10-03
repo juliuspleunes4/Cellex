@@ -13,11 +13,11 @@ Run this after downloading datasets to verify everything is ready for training.
 import sys
 from pathlib import Path
 
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent / "src"))
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent))
 
-from data.download_data import CellexDataDownloader
-from utils.logger import CellexLogger
+from src.data.download_data import CellexDataDownloader
+from src.utils.logger import CellexLogger
 
 def main():
     """Verify the cancer detection dataset is ready for training."""
