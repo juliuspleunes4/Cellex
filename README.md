@@ -547,7 +547,7 @@ MLFLOW_TRACKING_URI=http://localhost:5000
 
 > **Current Status**: Platform development complete. Clinical validation trials launching Q1 2026.
 
-### Regulatory Compliance
+### Regulatory Compliance *(coming soon!)*
 - **FDA 510(k) Clearance** (Pending - Q2 2026)
 - **CE Mark Certification** (European Union)
 - **Health Canada License** (Medical Device Class II)
@@ -556,14 +556,14 @@ MLFLOW_TRACKING_URI=http://localhost:5000
 
 ## 🔒 Enterprise Security & Privacy
 
-### Data Protection Framework
+### Data Protection Framework *(coming soon!)*
 - **End-to-End Encryption** (AES-256) for all patient data
 - **Zero-Trust Architecture** with multi-factor authentication
 - **HIPAA/GDPR Compliance** with automated privacy controls
 - **De-identification Pipeline** removing all PII before processing
 - **Secure Multi-Tenancy** isolating institutional data
 
-### Infrastructure Security
+### Infrastructure Security *(coming soon!)*
 ```yaml
 Security Measures:
   - TLS 1.3 encrypted communications
@@ -576,7 +576,7 @@ Security Measures:
 
 ## 🏗️ Platform Architecture
 
-### Microservices Design
+### Microservices Design *(coming soon!)*
 ```
 Cellex Platform/
 ├── diagnostic-api/      # Core inference engine
@@ -592,21 +592,6 @@ Cellex Platform/
 - **🏢 On-Premise**: Private cloud deployment for sensitive data
 - **🔒 Air-Gapped**: Isolated systems for maximum security
 - **📱 Edge Computing**: Real-time processing at point of care
-
-## 🤝 Partnership Program
-
-### Healthcare Integration Partners
-- **Epic Systems** - Certified marketplace application
-- **Cerner Corporation** - Native EMR integration
-- **Philips Healthcare** - PACS workflow integration  
-- **GE Healthcare** - Modality connectivity
-- **Siemens Healthineers** - AI orchestration platform
-
-### Academic Collaborations
-- **Stanford Medicine** - AI research consortium
-- **Mayo Clinic** - Clinical validation studies
-- **Johns Hopkins** - Radiology residency training
-- **Harvard Medical** - Population health studies
 
 ## 📈 Business Solutions
 
@@ -638,20 +623,6 @@ Cellex Platform/
 - **[Case Studies](docs/cases/)** - Real-world implementation examples
 - **[FAQ](docs/faq/)** - Common questions and troubleshooting
 
-## 🌐 Global Impact
-
-### Current Deployments
-- **🇺🇸 United States**: 47 health systems, 12 states
-- **🇪🇺 European Union**: 23 hospitals across 8 countries
-- **🇨🇦 Canada**: Provincial health networks in Ontario, BC
-- **🌏 Asia-Pacific**: Pilot programs in Japan, Singapore, Australia
-
-### Social Impact Metrics
-- **2.3M+ Studies** processed to date
-- **15,000+ Earlier Detections** enabling timely treatment
-- **$47M Healthcare Savings** through workflow efficiency
-- **89% Radiologist Satisfaction** in user experience surveys
-
 ## ⚠️ Important Medical Information
 
 **Cellex Cancer Detection Platform is designed as a diagnostic aid for qualified healthcare professionals. This system:**
@@ -664,48 +635,6 @@ Cellex Platform/
 - ❌ **IS NOT** approved for use outside of supervised clinical environments
 
 **Always consult qualified healthcare professionals for medical decisions. Cellex assumes no liability for clinical decisions made using this platform.**
-
-## �️ Troubleshooting & FAQ
-
-
-
-
-```bash
-# After system crash or unexpected shutdown:
-python train.py --list-checkpoints   # Check what's available
-python train.py --resume latest      # Continue from last save
-```
-
-### Common Training Issues
-
-#### GPU Memory Errors
-```bash
-# Reduce batch size for limited GPU memory
-python train.py --batch-size 16   # Or even smaller: --batch-size 8
-```
-
-#### Training Too Slow
-```bash
-# Increase batch size if you have sufficient GPU memory  
-python train.py --batch-size 64   # Or larger if your GPU supports it
-```
-
-#### Dataset Validation Failures
-```bash
-# Re-download and process datasets
-python src/data/download_data.py
-
-# Validate dataset structure  
-python train.py --validate-only
-```
-
-### Checkpoint Best Practices
-
-- 💡 **Always use `--resume latest`** when continuing work
-- 💡 **Save checkpoints frequently** (every 5 epochs by default)  
-- 💡 **Keep multiple checkpoints** for recovery from corruption
-- 💡 **Monitor disk space** - each checkpoint is ~100-500MB
-- 💡 **Use Ctrl+C to safely stop** training (auto-saves before exit)
 
 ## �📞 Contact & Support
 
