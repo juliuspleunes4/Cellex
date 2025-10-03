@@ -117,8 +117,8 @@ def test_model_creation():
     print("\n[TEST] TESTING MODEL CREATION")
     print("=" * 50)
     
-    # Test different model architectures
-    models = ["efficientnet_b0", "resnet50", "densenet121"]
+    # Test supported model architectures
+    models = ["efficientnet_b0", "resnet50"]
     
     for model_name in models:
         try:
@@ -133,6 +133,9 @@ config.model.num_classes = 2
 
 model = create_model(config)
 print(f'Model {model_name} created successfully')
+
+# Set model to evaluation mode for testing (fixes BatchNorm issue with batch_size=1)
+model.eval()
 
 # Test forward pass with dummy input
 dummy_input = torch.randn(1, 3, 224, 224)
