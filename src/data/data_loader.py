@@ -291,15 +291,15 @@ class CellexDataLoader:
             image_paths = []
             labels = []
             
-            # Normal class (label 0)
-            normal_path = split_path / "normal"
-            if normal_path.exists():
-                normal_images = list(normal_path.glob("*.jpg")) + \
-                              list(normal_path.glob("*.png")) + \
-                              list(normal_path.glob("*.jpeg"))
+            # Healthy class (label 0)
+            healthy_path = split_path / "healthy"
+            if healthy_path.exists():
+                healthy_images = list(healthy_path.glob("*.jpg")) + \
+                              list(healthy_path.glob("*.png")) + \
+                              list(healthy_path.glob("*.jpeg"))
                 
-                image_paths.extend([str(p) for p in normal_images])
-                labels.extend([0] * len(normal_images))
+                image_paths.extend([str(p) for p in healthy_images])
+                labels.extend([0] * len(healthy_images))
             
             # Cancer class (label 1)
             cancer_path = split_path / "cancer"
@@ -343,8 +343,17 @@ class CellexDataLoader:
         
         self.logger.subsection("CREATING DATA LOADERS")
         
-        # Optimize number of workers for better GPU utilization
-        optimal_workers = min(8, os.cpu_count() or 4)
+        # Optimize number of workers for better GPU utilization  
+        # Windows compatibility: use 0 workers to avoid multiprocessing issues
+        import platform
+        if platform.system() == 'Windows':
+            optimal_workers = 0  # Single-threaded for Windows stability
+            persistent_workers = False  # Cannot use persistent workers with num_workers=0
+            prefetch_factor = None  # Cannot use prefetch_factor with num_workers=0
+        else:
+            optimal_workers = min(8, os.cpu_count() or 4)
+            persistent_workers = True
+            prefetch_factor = 2
         
         # Training loader with shuffle
         train_loader = DataLoader(
@@ -354,8 +363,8 @@ class CellexDataLoader:
             num_workers=optimal_workers,
             pin_memory=True,
             drop_last=True,
-            persistent_workers=True,  # Keep workers alive between epochs
-            prefetch_factor=2  # Prefetch more batches for better GPU utilization
+            persistent_workers=persistent_workers,  # Keep workers alive between epochs
+            prefetch_factor=prefetch_factor  # Prefetch more batches for better GPU utilization
         )
         
         # Validation loader
@@ -366,8 +375,8 @@ class CellexDataLoader:
             num_workers=optimal_workers,
             pin_memory=True,
             drop_last=False,
-            persistent_workers=True,
-            prefetch_factor=2
+            persistent_workers=persistent_workers,
+            prefetch_factor=prefetch_factor
         )
         
         # Test loader
@@ -378,8 +387,8 @@ class CellexDataLoader:
             num_workers=optimal_workers,
             pin_memory=True,
             drop_last=False,
-            persistent_workers=True,
-            prefetch_factor=2
+            persistent_workers=persistent_workers,
+            prefetch_factor=prefetch_factor
         )
         
         self.logger.success(f"[SUCCESS] Data loaders created (batch_size={batch_size})")

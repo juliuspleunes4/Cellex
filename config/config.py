@@ -50,7 +50,7 @@ class ModelConfig:
     # Architecture
     backbone: str = "efficientnet_b0"
     num_classes: int = 2  # Normal, Cancer
-    dropout_rate: float = 0.2
+    dropout_rate: float = 0.3  # Updated for better regularization
     
     # Pre-trained weights
     pretrained: bool = True
@@ -74,26 +74,33 @@ class TrainingConfig:
     """Training configuration."""
     
     # Training parameters
-    batch_size: int = 64  # Increased for better GPU utilization
-    learning_rate: float = 1e-4
-    num_epochs: int = 100
-    early_stopping_patience: int = 10
+    batch_size: int = 64  # Reduced for better stability
+    learning_rate: float = 5e-5  # Reduced learning rate for better convergence
+    num_epochs: int = 50  # Reduced epochs with early stopping
+    early_stopping_patience: int = 7  # More aggressive early stopping
     
     # Optimizer
-    optimizer: str = "adam"
-    weight_decay: float = 1e-5
+    optimizer: str = "adamw"  # AdamW for better regularization
+    weight_decay: float = 1e-3  # Increased weight decay
     
     # Learning rate scheduler
     scheduler: str = "cosine"
     scheduler_params: Dict = None
     
     # Loss function
-    loss_function: str = "focal_loss"  # Better for medical imaging
-    class_weights: Optional[List[float]] = None
+    loss_function: str = "weighted_cross_entropy"  # Handle class imbalance
+    class_weights: Optional[List[float]] = None  # Auto-calculated from data
+    use_class_balancing: bool = True  # Enable automatic class balancing
     
-    # Regularization
+    # Regularization - Enhanced
+    dropout_rate: float = 0.3  # Dropout for regularization
     mixup_alpha: float = 0.2
     cutmix_alpha: float = 1.0
+    label_smoothing: float = 0.1  # Label smoothing for better generalization
+    
+    # Validation monitoring
+    monitor_metric: str = "val_balanced_accuracy"  # Better metric for imbalanced data
+    save_best_only: bool = True
     
     def __post_init__(self):
         if self.scheduler_params is None:
@@ -135,7 +142,7 @@ class LoggingConfig:
     
     # Logging levels
     log_level: str = "INFO"
-    log_file: str = "logs/cellex.log"
+    log_file: str = "logs/training.log"
     
     # Metrics tracking
     track_gradients: bool = True

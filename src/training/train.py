@@ -98,6 +98,12 @@ class CellexMetrics:
         denominator = self.true_negatives + self.false_positives
         return self.true_negatives / denominator if denominator > 0 else 0.0
     
+    def get_balanced_accuracy(self) -> float:
+        """Calculate balanced accuracy (average of sensitivity and specificity)."""
+        sensitivity = self.get_recall()
+        specificity = self.get_specificity()
+        return (sensitivity + specificity) / 2.0
+    
     @property
     def avg_loss(self) -> float:
         """Calculate average loss."""
@@ -141,7 +147,7 @@ class CellexTrainer:
     
     def __init__(self, config=None, resume_from=None):
         self.config = config or get_config()
-        self.logger = get_logger("CellexTrainer")
+        self.logger = get_logger("CellexTrainer", self.config.logging.log_file)
         
         # Set device
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -254,6 +260,16 @@ class CellexTrainer:
                 # Recreate data loaders with optimized batch size
                 train_loader, val_loader, test_loader = create_data_loaders(data_dir, self.config, batch_size=optimized_batch_size)
         
+        # Calculate class weights if enabled
+        if self.config.training.use_class_balancing and not self.config.training.class_weights:
+            class_weights = self._calculate_class_weights(train_loader)
+            self.config.training.class_weights = class_weights.tolist()
+            self.logger.info(f"[STATS] Calculated class weights: {class_weights.tolist()}")
+            
+            # Recreate loss function with class weights
+            criterion = create_loss_function(self.config)
+            criterion = criterion.to(self.device)
+        
         # Setup graceful shutdown for interruption
         def signal_handler(signum, frame):
             self.logger.info("\n[WARNING] Training interruption requested (Ctrl+C)")
@@ -296,11 +312,13 @@ class CellexTrainer:
             # Log metrics
             self._log_epoch_results(epoch, train_metrics, val_metrics, optimizer.param_groups[0]['lr'])
             
-            # Save best model
-            if val_metrics.get_accuracy() > self.best_val_accuracy:
-                self.best_val_accuracy = val_metrics.get_accuracy()
-                self._save_model(model, f"best_model_epoch_{epoch}.pth", val_metrics.get_accuracy())
-                self.logger.success(f"[SYMBOL] New best model saved! Accuracy: {val_metrics.get_accuracy():.4f}")
+            # Save best model and checkpoint (using balanced accuracy for imbalanced data)
+            current_balanced_acc = val_metrics.get_balanced_accuracy()
+            if current_balanced_acc > self.best_val_accuracy:
+                self.best_val_accuracy = current_balanced_acc
+                self._save_model(model, f"best_model_epoch_{epoch}.pth", current_balanced_acc)
+                self._save_best_checkpoint(model, optimizer, scheduler, epoch)
+                self.logger.success(f"[SYMBOL] New best model saved! Balanced Accuracy: {current_balanced_acc:.4f}")
             
             # Early stopping check
             if early_stopping(val_metrics.get_average_loss(), model):
@@ -483,6 +501,30 @@ class CellexTrainer:
         
         return metrics
     
+    def _calculate_class_weights(self, train_loader):
+        """Calculate class weights for balanced training."""
+        class_counts = torch.zeros(2)  # Assuming binary classification
+        total_samples = 0
+        
+        self.logger.info("[STATS] Calculating class distribution...")
+        
+        for batch_idx, (_, targets) in enumerate(train_loader):
+            for target in targets:
+                class_counts[target] += 1
+                total_samples += 1
+            
+            # Show progress for large datasets
+            if batch_idx % 100 == 0:
+                self.logger.info(f"[PROGRESS] Processed {batch_idx * train_loader.batch_size:,} samples...")
+        
+        # Calculate weights (inverse frequency)
+        class_weights = total_samples / (2.0 * class_counts)
+        
+        self.logger.info(f"[STATS] Class distribution: Healthy={int(class_counts[0])}, Cancer={int(class_counts[1])}")
+        self.logger.info(f"[STATS] Class percentages: Healthy={100*class_counts[0]/total_samples:.1f}%, Cancer={100*class_counts[1]/total_samples:.1f}%")
+        
+        return class_weights
+    
     def _create_optimizer(self, model: nn.Module):
         """Create optimizer based on configuration."""
         if self.config.training.optimizer.lower() == 'adam':
@@ -550,6 +592,7 @@ class CellexTrainer:
                         f"Rec: {train_metrics.get_recall():.4f}")
         
         self.logger.info(f"[STATS] Val   - Acc: {val_metrics.get_accuracy():.4f} | "
+                        f"Bal.Acc: {val_metrics.get_balanced_accuracy():.4f} | "
                         f"Prec: {val_metrics.get_precision():.4f} | "
                         f"Rec: {val_metrics.get_recall():.4f} | "
                         f"F1: {val_metrics.get_f1_score():.4f}")
@@ -569,6 +612,7 @@ class CellexTrainer:
                     'val_loss': val_metrics.get_average_loss(),
                     'train_accuracy': train_metrics.get_accuracy(),
                     'val_accuracy': val_metrics.get_accuracy(),
+                    'val_balanced_accuracy': val_metrics.get_balanced_accuracy(),
                     'val_precision': val_metrics.get_precision(),
                     'val_recall': val_metrics.get_recall(),
                     'val_f1_score': val_metrics.get_f1_score(),
@@ -628,6 +672,19 @@ class CellexTrainer:
             'best_val_accuracy': self.best_val_accuracy,
             'training_history': self.training_history
         }, latest_path)
+    
+    def _save_best_checkpoint(self, model: nn.Module, optimizer, scheduler, epoch: int):
+        """Save best model checkpoint for resuming training from best state."""
+        best_checkpoint_path = self.checkpoint_dir / "best_checkpoint.pth"
+        
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'scheduler_state_dict': scheduler.state_dict() if scheduler else None,
+            'best_val_accuracy': self.best_val_accuracy,
+            'training_history': self.training_history
+        }, best_checkpoint_path)
     
     def load_checkpoint(self, checkpoint_path: str, model: nn.Module, optimizer, scheduler=None):
         """Load checkpoint and resume training."""

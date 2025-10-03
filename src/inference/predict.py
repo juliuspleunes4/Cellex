@@ -81,7 +81,7 @@ class CellexInference:
             raise FileNotFoundError(f"Model not found: {model_path}")
         
         # Load checkpoint
-        checkpoint = torch.load(model_path, map_location=self.device)
+        checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
         
         # Create model
         model = create_model(self.config)
