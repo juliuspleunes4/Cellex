@@ -22,26 +22,7 @@
 
 ## 🌟 Our Mission
 
-#### Training Issues
-```bash
-# Dataset not found error
-python verify_dataset.py          # Check if dataset is properly processed
-python src/data/download_data.py  # Re-download and process if needed
-
-# Out of memory errors  
-python train.py --batch-size 16   # Reduce batch size for limited GPU memory
-python train.py --batch-size 8    # Further reduce for very limited memory
-
-# Slow training
-python train.py --batch-size 64   # Increase batch size if you have sufficient GPU memory
-# Training automatically uses GPU if available
-
-# Check training progress
-# Look for files in: results/training_YYYYMMDD_HHMMSS/
-# Best model saved as: models/best_model_epoch_XX.pth
-```
-
-#### Kaggle API Setupocratizing advanced medical AI to make world-class diagnostic capabilities accessible to healthcare providers globally, ultimately saving lives through earlier detection and more accurate diagnoses.*
+*Democratizing advanced medical AI to make world-class diagnostic capabilities accessible to healthcare providers globally, ultimately saving lives through earlier detection and more accurate diagnoses.*
 
 ## 🔬 Platform Overview
 
@@ -528,36 +509,6 @@ MLFLOW_TRACKING_URI=http://localhost:5000
 # All configuration is handled through config/config.yaml
 ```
 
-### Common Development Issues
-
-#### Kaggle API Setup
-```bash
-# Error: "403 Forbidden" when downloading
-# Solution: Verify kaggle.json credentials
-kaggle datasets list  # Test API access
-
-# Error: "Dataset not found"
-# Solution: Accept dataset terms on Kaggle website first
-```
-
-#### CUDA/GPU Issues
-```bash
-# Check GPU availability
-python -c "import torch; print(torch.cuda.is_available())"
-
-# Training automatically detects and uses available hardware
-python train.py  # Uses GPU if available, falls back to CPU
-```
-
-#### Memory Issues
-```bash
-# Reduce batch size for limited RAM
-python train.py --batch-size 16
-
-# Mixed precision training is automatically enabled on compatible GPUs
-python train.py --epochs 50  # Automatically uses optimal settings
-```
-
 ## 🚧 Current Development Status
 
 ### ✅ Completed Components
@@ -716,29 +667,9 @@ Cellex Platform/
 
 ## �️ Troubleshooting & FAQ
 
-### Checkpoint & Resume Issues
 
-#### "No checkpoints found"
-```bash
-# First time training - no checkpoints exist yet
-python train.py  # Start fresh training
-```
 
-#### "Checkpoint not found: latest"  
-```bash
-# No previous training exists
-python train.py --list-checkpoints  # Check what's available
-python train.py                     # Start fresh training
-```
 
-#### "Corrupted checkpoint"
-```bash
-# Checkpoint file is damaged
-python train.py --list-checkpoints  # Find working checkpoint
-python train.py --resume checkpoint_epoch_15.pth  # Use older checkpoint
-```
-
-#### Training Interruption Recovery
 ```bash
 # After system crash or unexpected shutdown:
 python train.py --list-checkpoints   # Check what's available
