@@ -8,7 +8,7 @@
 
 ![Tests](https://img.shields.io/badge/tests-9%2F9%20passing-green)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-green)
-![Version](https://img.shields.io/badge/version-2.1.2-%2338257d?style=flat&labelColor=38257d&color=38257d)
+![Version](https://img.shields.io/badge/version-2.2.0-%2338257d?style=flat&labelColor=38257d&color=38257d)
 
 <p align="center">
     <img src="assets/cellex.png" alt="Caesar Logo" width="125" align="left">
@@ -614,14 +614,13 @@ Cellex Platform/
 ### For Developers
 - **[API Documentation](docs/api/)** - Complete REST API reference
 - **[SDK Libraries](docs/sdk/)** - Python, R, and MATLAB integrations
-- **[Deployment Guides](docs/deployment/)** - Step-by-step implementation
-- **[Best Practices](docs/best-practices/)** - Clinical AI guidelines
+- **[Best Practices](docs/BEST-PRACTICES.md/)** - Clinical AI guidelines
 
 ### For Clinicians  
 - **[Clinical Validation](docs/clinical/)** - Published study results
 - **[User Training](docs/training/)** - Interactive learning modules
 - **[Case Studies](docs/cases/)** - Real-world implementation examples
-- **[FAQ](docs/faq/)** - Common questions and troubleshooting
+- **[FAQ](docs/FAQ.md/)** - Common questions
 
 ## ⚠️ Important Medical Information
 
