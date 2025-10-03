@@ -9,13 +9,20 @@
 ![Coverage](https://img.shields.io/badge/coverage-100%25-green)
 ![Version](https://img.shields.io/badge/version-2.2.0-%2338257d?style=flat&labelColor=38257d&color=38257d)
 
-<img src="assets/cellex_logo.png" alt="Cellex Logo" width="125" style="float: left; margin-right: 20px;">
+<table>
+<tr>
+<td width="125">
+<img src="assets/cellex_logo.png" alt="Cellex Logo" width="125">
+</td>
+<td>
 
 ## Leading the Future of Diagnostic Imaging
 
 **Cellex** is a pioneering medical technology company specializing in AI-powered diagnostic solutions for healthcare providers worldwide. Our flagship cancer detection platform leverages cutting-edge deep learning to assist radiologists in early cancer detection, improving patient outcomes through faster, more accurate diagnoses.
 
-<br clear="left">
+</td>
+</tr>
+</table>
 
 ---
 
