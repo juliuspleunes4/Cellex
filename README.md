@@ -9,7 +9,7 @@
 ![Coverage](https://img.shields.io/badge/coverage-100%25-green)
 ![Version](https://img.shields.io/badge/version-2.2.0-%2338257d?style=flat&labelColor=38257d&color=38257d)
 
-<img src="assets/cellex.png" alt="Cellex Logo" width="125" style="float: left; margin-right: 20px;">
+<img src="assets/cellex_logo.png" alt="Cellex Logo" width="125" style="float: left; margin-right: 20px;">
 
 ## Leading the Future of Diagnostic Imaging
 
