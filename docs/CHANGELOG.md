@@ -4,6 +4,12 @@ All notable changes to the Cellex Cancer Detection System will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> **Versioning follows [Semantic Versioning](https://semver.org/):**
+>
+> - **Major version** (first digit) is incremented and minor/patch reset when a huge change occurs, altering the entire codebase or workflow (e.g., `2.0.4` → `3.0.0`).
+> - **Minor version** (second digit) is incremented and patch reset when a new feature is added (e.g., `2.4.6` → `2.5.0`).
+> - **Patch version** (third digit) is incremented for updates or changes to existing features (e.g., `2.4.5` → `2.4.6`).
+
 ## [Unreleased]
 
 ## [2.0.0] - 2025-10-03
