@@ -21,7 +21,7 @@ def import_test_module(test_file):
 def run_test_suite(test_file, test_function_name):
     """Run a specific test suite."""
     try:
-        print(f"\n🚀 Running {test_file.stem.upper()}")
+        print(f"\n[LAUNCH] Running {test_file.stem.upper()}")
         print("=" * 80)
         
         # Import and run the test module
@@ -33,17 +33,17 @@ def run_test_suite(test_file, test_function_name):
         end_time = time.time()
         
         duration = end_time - start_time
-        print(f"\n⏱️ Test suite completed in {duration:.2f} seconds")
+        print(f"\n[TIMER][INFO] Test suite completed in {duration:.2f} seconds")
         
         return result
         
     except Exception as e:
-        print(f"❌ Error running {test_file.stem}: {e}")
+        print(f"[ERROR] Error running {test_file.stem}: {e}")
         return False
 
 def check_python_environment():
     """Check if we're in the correct Python environment."""
-    print("🐍 PYTHON ENVIRONMENT CHECK")
+    print("[PYTHON] PYTHON ENVIRONMENT CHECK")
     print("=" * 80)
     
     # Check Python version
@@ -51,9 +51,9 @@ def check_python_environment():
     
     # Check if we're in a virtual environment
     if hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix):
-        print("✅ Virtual environment detected")
+        print("[SUCCESS] Virtual environment detected")
     else:
-        print("⚠️ Not in virtual environment")
+        print("[WARNING] Not in virtual environment")
     
     # Check key dependencies
     key_packages = ['torch', 'torchvision', 'numpy', 'PIL', 'cv2']
@@ -62,22 +62,22 @@ def check_python_environment():
     for package in key_packages:
         try:
             __import__(package)
-            print(f"✅ {package} available")
+            print(f"[SUCCESS] {package} available")
         except ImportError:
             missing_packages.append(package)
-            print(f"❌ {package} missing")
+            print(f"[ERROR] {package} missing")
     
     if missing_packages:
-        print(f"\n⚠️ Missing packages: {missing_packages}")
+        print(f"\n[WARNING] Missing packages: {missing_packages}")
         print("Install with: pip install -r requirements.txt")
         return False
     
-    print("\n✅ Python environment ready for testing")
+    print("\n[SUCCESS] Python environment ready for testing")
     return True
 
 def check_project_structure():
     """Check if project structure is correct."""
-    print("\n📁 PROJECT STRUCTURE CHECK")
+    print("\n[FOLDER] PROJECT STRUCTURE CHECK")
     print("=" * 80)
     
     required_paths = [
@@ -95,32 +95,32 @@ def check_project_structure():
     
     for path in required_paths:
         if Path(path).exists():
-            print(f"✅ {path}")
+            print(f"[SUCCESS] {path}")
         else:
             missing_files.append(path)
-            print(f"❌ {path}")
+            print(f"[ERROR] {path}")
     
     if missing_files:
-        print(f"\n⚠️ Missing files: {missing_files}")
+        print(f"\n[WARNING] Missing files: {missing_files}")
         return False
     
-    print("\n✅ Project structure complete")
+    print("\n[SUCCESS] Project structure complete")
     return True
 
 def run_comprehensive_tests():
     """Run all test suites in the correct order."""
-    print("🧪 CELLEX COMPREHENSIVE TEST SUITE")
+    print("[TEST] CELLEX COMPREHENSIVE TEST SUITE")
     print("=" * 80)
-    print(f"🕐 Started at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"[TIME] Started at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 80)
     
     # Environment checks first
     if not check_python_environment():
-        print("\n❌ Environment checks failed. Please fix environment setup.")
+        print("\n[ERROR] Environment checks failed. Please fix environment setup.")
         return False
     
     if not check_project_structure():
-        print("\n❌ Project structure checks failed. Please ensure all files are present.")
+        print("\n[ERROR] Project structure checks failed. Please ensure all files are present.")
         return False
     
     # Test suites to run
@@ -138,12 +138,12 @@ def run_comprehensive_tests():
             result = run_test_suite(test_file, test_function)
             results.append((test_file.stem, result))
         else:
-            print(f"⚠️ Test file {test_file} not found, skipping...")
+            print(f"[WARNING] Test file {test_file} not found, skipping...")
             results.append((test_file.stem, None))
     
     # Final summary
     print("\n" + "=" * 80)
-    print("📊 COMPREHENSIVE TEST RESULTS")
+    print("[STATS] COMPREHENSIVE TEST RESULTS")
     print("=" * 80)
     
     passed = 0
@@ -151,33 +151,33 @@ def run_comprehensive_tests():
     
     for test_name, result in results:
         if result is None:
-            status = "⏭️ SKIPPED"
+            status = "[SYMBOL][INFO] SKIPPED"
         elif result:
-            status = "✅ PASSED"
+            status = "[SUCCESS] PASSED"
             passed += 1
         else:
-            status = "❌ FAILED"
+            status = "[ERROR] FAILED"
         
         print(f"{test_name.replace('_', ' ').title():.<50} {status}")
     
     print("-" * 80)
-    print(f"🎯 Overall Results: {passed}/{total} test suites passed")
+    print(f"[TARGET] Overall Results: {passed}/{total} test suites passed")
     
     if passed == total and total > 0:
-        print("\n🎉 ALL TESTS PASSED!")
-        print("🚀 Your Cellex system is fully operational!")
+        print("\n[COMPLETE] ALL TESTS PASSED!")
+        print("[LAUNCH] Your Cellex system is fully operational!")
         return True
     elif total == 0:
-        print("\n⚠️ No tests were run. Please check test file locations.")
+        print("\n[WARNING] No tests were run. Please check test file locations.")
         return False
     else:
-        print(f"\n⚠️ {total - passed} test suite(s) failed.")
-        print("🔧 Please review the failed tests and fix any issues.")
+        print(f"\n[WARNING] {total - passed} test suite(s) failed.")
+        print("[FIX] Please review the failed tests and fix any issues.")
         return False
 
 def run_quick_tests():
     """Run a quick subset of tests for rapid validation."""
-    print("⚡ CELLEX QUICK TEST SUITE")
+    print("[SYMBOL] CELLEX QUICK TEST SUITE")
     print("=" * 80)
     
     # Just run basic imports and help commands
@@ -199,14 +199,14 @@ def run_quick_tests():
                 result = subprocess.run(test_cmd, capture_output=True, text=True, timeout=10)
             
             if result.returncode == 0:
-                print(f"✅ {test_name}")
+                print(f"[SUCCESS] {test_name}")
                 passed += 1
             else:
-                print(f"❌ {test_name}")
+                print(f"[ERROR] {test_name}")
         except Exception as e:
-            print(f"❌ {test_name}: {e}")
+            print(f"[ERROR] {test_name}: {e}")
     
-    print(f"\n⚡ Quick tests: {passed}/{len(quick_tests)} passed")
+    print(f"\n[SYMBOL] Quick tests: {passed}/{len(quick_tests)} passed")
     return passed == len(quick_tests)
 
 def main():

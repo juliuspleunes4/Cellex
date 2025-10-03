@@ -36,7 +36,7 @@ def create_test_image():
 
 def test_inference_imports():
     """Test that inference modules can be imported."""
-    print("\n🧪 TESTING INFERENCE IMPORTS")
+    print("\n[TEST] TESTING INFERENCE IMPORTS")
     print("=" * 50)
     
     try:
@@ -45,20 +45,20 @@ def test_inference_imports():
                               capture_output=True, text=True, timeout=15)
         
         if result.returncode == 0:
-            print("✅ Inference imports working")
+            print("[SUCCESS] Inference imports working")
             return True
         else:
-            print("❌ Inference import errors:")
+            print("[ERROR] Inference import errors:")
             print(result.stderr)
             return False
             
     except Exception as e:
-        print(f"❌ Error testing inference imports: {e}")
+        print(f"[ERROR] Error testing inference imports: {e}")
         return False
 
 def test_predict_script_help():
     """Test prediction script help functionality."""
-    print("\n🧪 TESTING PREDICTION SCRIPT HELP")
+    print("\n[TEST] TESTING PREDICTION SCRIPT HELP")
     print("=" * 50)
     
     try:
@@ -75,23 +75,23 @@ def test_predict_script_help():
                     missing_options.append(option)
             
             if missing_options:
-                print(f"⚠️ Some prediction options missing: {missing_options}")
+                print(f"[WARNING] Some prediction options missing: {missing_options}")
                 # Not a failure since predict script might have different interface
             
-            print("✅ Prediction script help working")
+            print("[SUCCESS] Prediction script help working")
             return True
         else:
-            print("❌ Prediction script help failed:")
+            print("[ERROR] Prediction script help failed:")
             print(result.stderr)
             return False
             
     except Exception as e:
-        print(f"❌ Error testing prediction help: {e}")
+        print(f"[ERROR] Error testing prediction help: {e}")
         return False
 
 def test_inference_initialization():
     """Test inference system initialization without trained model."""
-    print("\n🧪 TESTING INFERENCE INITIALIZATION")
+    print("\n[TEST] TESTING INFERENCE INITIALIZATION")
     print("=" * 50)
     
     try:
@@ -120,20 +120,20 @@ with torch.no_grad():
                               capture_output=True, text=True, timeout=20)
         
         if result.returncode == 0:
-            print("✅ Inference initialization working")
+            print("[SUCCESS] Inference initialization working")
             return True
         else:
-            print("❌ Inference initialization errors:")
+            print("[ERROR] Inference initialization errors:")
             print(result.stderr[:300])
             return False
             
     except Exception as e:
-        print(f"❌ Error testing inference initialization: {e}")
+        print(f"[ERROR] Error testing inference initialization: {e}")
         return False
 
 def test_image_preprocessing():
     """Test image preprocessing for inference."""
-    print("\n🧪 TESTING IMAGE PREPROCESSING")
+    print("\n[TEST] TESTING IMAGE PREPROCESSING")
     print("=" * 50)
     
     # Create test image
@@ -158,30 +158,36 @@ print('Test transforms created')
 if image.mode != 'RGB':
     image = image.convert('RGB')
 
-transformed = test_transform(image)
+# Convert PIL to numpy for albumentations
+import numpy as np
+image_array = np.array(image)
+
+# Apply transforms with correct albumentations syntax
+transformed_dict = test_transform(image=image_array)
+transformed = transformed_dict['image']
 print(f'Image preprocessed: {{transformed.shape}}')
 
 # Should be [3, 224, 224]
 if transformed.shape == torch.Size([3, 224, 224]):
-    print('✅ Image preprocessing successful')
+    print('[SUCCESS] Image preprocessing successful')
 else:
-    print(f'❌ Unexpected image shape: {{transformed.shape}}')
+    print(f'[ERROR] Unexpected image shape: {{transformed.shape}}')
 """
         
         result = subprocess.run([sys.executable, "-c", test_code], 
                               capture_output=True, text=True, timeout=15)
         
-        if result.returncode == 0 and "✅ Image preprocessing successful" in result.stdout:
-            print("✅ Image preprocessing working")
+        if result.returncode == 0 and "[SUCCESS] Image preprocessing successful" in result.stdout:
+            print("[SUCCESS] Image preprocessing working")
             return True
         else:
-            print("❌ Image preprocessing errors:")
+            print("[ERROR] Image preprocessing errors:")
             print(result.stdout)
             print(result.stderr)
             return False
             
     except Exception as e:
-        print(f"❌ Error testing image preprocessing: {e}")
+        print(f"[ERROR] Error testing image preprocessing: {e}")
         return False
     finally:
         # Clean up test image
@@ -193,7 +199,7 @@ else:
 
 def test_prediction_without_model():
     """Test prediction script behavior without trained model."""
-    print("\n🧪 TESTING PREDICTION WITHOUT MODEL")
+    print("\n[TEST] TESTING PREDICTION WITHOUT MODEL")
     print("=" * 50)
     
     # Create test image
@@ -207,16 +213,16 @@ def test_prediction_without_model():
         if ("model" in result.stderr.lower() or 
             "not found" in result.stderr.lower() or
             result.returncode != 0):
-            print("✅ Prediction script handles missing model gracefully")
+            print("[SUCCESS] Prediction script handles missing model gracefully")
             return True
         else:
-            print("⚠️ Prediction script behavior unclear without model")
+            print("[WARNING] Prediction script behavior unclear without model")
             print("STDOUT:", result.stdout[:200])
             print("STDERR:", result.stderr[:200])
             return True  # Not a failure, just unclear behavior
             
     except Exception as e:
-        print(f"❌ Error testing prediction: {e}")
+        print(f"[ERROR] Error testing prediction: {e}")
         return False
     finally:
         # Clean up test image
@@ -228,7 +234,7 @@ def test_prediction_without_model():
 
 def test_gradcam_availability():
     """Test GradCAM functionality availability."""
-    print("\n🧪 TESTING GRADCAM AVAILABILITY")
+    print("\n[TEST] TESTING GRADCAM AVAILABILITY")
     print("=" * 50)
     
     try:
@@ -236,10 +242,10 @@ def test_gradcam_availability():
 try:
     from pytorch_grad_cam import GradCAM
     from pytorch_grad_cam.utils.image import show_cam_on_image
-    print('✅ GradCAM dependencies available')
+    print('[SUCCESS] GradCAM dependencies available')
     GRADCAM_AVAILABLE = True
 except ImportError as e:
-    print(f'⚠️ GradCAM not available: {e}')
+    print(f'[WARNING] GradCAM not available: {e}')
     GRADCAM_AVAILABLE = False
 
 print(f'GradCAM status: {GRADCAM_AVAILABLE}')
@@ -249,23 +255,23 @@ print(f'GradCAM status: {GRADCAM_AVAILABLE}')
                               capture_output=True, text=True, timeout=15)
         
         if result.returncode == 0:
-            if "✅ GradCAM dependencies available" in result.stdout:
-                print("✅ GradCAM dependencies working")
+            if "[SUCCESS] GradCAM dependencies available" in result.stdout:
+                print("[SUCCESS] GradCAM dependencies working")
             else:
-                print("⚠️ GradCAM dependencies missing (optional feature)")
+                print("[WARNING] GradCAM dependencies missing (optional feature)")
             return True
         else:
-            print("❌ GradCAM test errors:")
+            print("[ERROR] GradCAM test errors:")
             print(result.stderr)
             return False
             
     except Exception as e:
-        print(f"❌ Error testing GradCAM: {e}")
+        print(f"[ERROR] Error testing GradCAM: {e}")
         return False
 
 def run_all_inference_tests():
     """Run all inference and prediction tests."""
-    print("🧪 CELLEX INFERENCE PIPELINE TESTS")
+    print("[TEST] CELLEX INFERENCE PIPELINE TESTS")
     print("=" * 60)
     
     test_results = []
@@ -285,18 +291,18 @@ def run_all_inference_tests():
             result = test_func()
             test_results.append((test_name, result))
         except Exception as e:
-            print(f"❌ {test_name} failed with exception: {e}")
+            print(f"[ERROR] {test_name} failed with exception: {e}")
             test_results.append((test_name, False))
     
     # Summary
-    print("\n📊 TEST RESULTS SUMMARY")
+    print("\n[STATS] TEST RESULTS SUMMARY")
     print("=" * 60)
     
     passed = 0
     total = len(test_results)
     
     for test_name, result in test_results:
-        status = "✅ PASSED" if result else "❌ FAILED"
+        status = "[SUCCESS] PASSED" if result else "[ERROR] FAILED"
         print(f"{test_name:.<35} {status}")
         if result:
             passed += 1
@@ -305,10 +311,10 @@ def run_all_inference_tests():
     print(f"Tests passed: {passed}/{total}")
     
     if passed == total:
-        print("🎉 All inference pipeline tests passed!")
+        print("[COMPLETE] All inference pipeline tests passed!")
         return True
     else:
-        print("⚠️ Some tests failed - check output above")
+        print("[WARNING] Some tests failed - check output above")
         return False
 
 if __name__ == "__main__":

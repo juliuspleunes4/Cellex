@@ -28,14 +28,14 @@ def test_checkpoint_system():
         result = subprocess.run([sys.executable, "train.py", "--list-checkpoints"], 
                               capture_output=True, text=True, timeout=15)
         if result.returncode == 0 and ("No checkpoints found" in result.stdout or "checkpoints found" in result.stdout):
-            safe_print("✓ List checkpoints working")
+            safe_print("[SYMBOL] List checkpoints working")
             test_results.append(True)
         else:
-            safe_print("✗ List checkpoints failed")
+            safe_print("[SYMBOL] List checkpoints failed")
             safe_print(f"Output: {result.stdout[:100]}")
             test_results.append(False)
     except Exception as e:
-        safe_print(f"✗ List checkpoints error: {e}")
+        safe_print(f"[SYMBOL] List checkpoints error: {e}")
         test_results.append(False)
     
     # Test 2: Test help command shows checkpoint options  
@@ -47,13 +47,13 @@ def test_checkpoint_system():
         has_list = "--list-checkpoints" in result.stdout
         
         if has_resume and has_list:
-            safe_print("✓ Checkpoint options present in help")
+            safe_print("[SYMBOL] Checkpoint options present in help")
             test_results.append(True)
         else:
-            safe_print(f"✗ Missing options: resume={has_resume}, list={has_list}")
+            safe_print(f"[SYMBOL] Missing options: resume={has_resume}, list={has_list}")
             test_results.append(False)
     except Exception as e:
-        safe_print(f"✗ Help command error: {e}")
+        safe_print(f"[SYMBOL] Help command error: {e}")
         test_results.append(False)
     
     # Test 3: Test validation bypasses checkpoint loading (correct behavior)
@@ -64,14 +64,14 @@ def test_checkpoint_system():
         # Should complete validation successfully since validate-only exits before checkpoint loading
         validation_passed = "Dataset validation" in result.stdout and result.returncode == 0
         if validation_passed:
-            safe_print("✓ Validation correctly bypasses checkpoint loading")
+            safe_print("[SYMBOL] Validation correctly bypasses checkpoint loading")
             test_results.append(True)
         else:
-            safe_print("✗ Validation not working properly")
+            safe_print("[SYMBOL] Validation not working properly")
             safe_print(f"Return code: {result.returncode}")
             test_results.append(False)
     except Exception as e:
-        safe_print(f"✗ Validation test error: {e}")
+        safe_print(f"[SYMBOL] Validation test error: {e}")
         test_results.append(False)
     
     # Summary

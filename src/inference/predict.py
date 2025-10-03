@@ -26,9 +26,11 @@ from src.data.data_loader import CellexTransforms
 from config.config import get_config
 
 try:
-    from pytorch_grad_cam import GradCAM
-    from pytorch_grad_cam.utils.image import show_cam_on_image
-    GRADCAM_AVAILABLE = True
+    # Temporarily disable GradCAM to fix scipy compatibility issues
+    # from pytorch_grad_cam import GradCAM
+    # from pytorch_grad_cam.utils.image import show_cam_on_image
+    GRADCAM_AVAILABLE = False
+    print("Info: GradCAM temporarily disabled for compatibility")
 except ImportError:
     GRADCAM_AVAILABLE = False
 
@@ -52,7 +54,7 @@ class CellexInference:
         
         # Set device
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.logger.info(f"🖥️  Device: {self.device}")
+        self.logger.info(f"[SYMBOL][INFO]  Device: {self.device}")
         
         # Load model
         self.model = self._load_model(model_path)
@@ -69,11 +71,11 @@ class CellexInference:
         # Performance tracking
         self.inference_times = []
         
-        self.logger.success("✅ Cellex inference engine initialized")
+        self.logger.success("Cellex inference engine initialized")
     
     def _load_model(self, model_path: str) -> torch.nn.Module:
         """Load trained model from checkpoint."""
-        self.logger.info(f"📂 Loading model from: {model_path}")
+        self.logger.info(f"[FILE] Loading model from: {model_path}")
         
         if not Path(model_path).exists():
             raise FileNotFoundError(f"Model not found: {model_path}")
@@ -91,9 +93,9 @@ class CellexInference:
             self.logger.metric("Model Accuracy", checkpoint['accuracy'], "")
         
         if 'epoch' in checkpoint:
-            self.logger.info(f"📊 Trained for {checkpoint['epoch']} epochs")
+            self.logger.info(f"[INFO] Trained for {checkpoint['epoch']} epochs")
         
-        self.logger.success("✅ Model loaded successfully")
+        self.logger.success("Model loaded successfully")
         return model
     
     def predict_single(self, 
@@ -144,11 +146,11 @@ class CellexInference:
                 attention_map = self._get_attention_visualization(image)
                 results['attention_map'] = attention_map
             except Exception as e:
-                self.logger.warning(f"⚠️  Attention visualization failed: {str(e)}")
+                self.logger.warning(f"[WARNING]  Attention visualization failed: {str(e)}")
         
         # Log prediction
         confidence_percent = results['confidence'] * 100
-        confidence_color = "🟢" if confidence_percent > 80 else "🟡" if confidence_percent > 60 else "🔴"
+        confidence_color = "[SYMBOL]" if confidence_percent > 80 else "[SYMBOL]" if confidence_percent > 60 else "[SYMBOL]"
         
         self.logger.info(
             f"{confidence_color} Prediction: {results['class_name']} "
@@ -174,7 +176,7 @@ class CellexInference:
             List of prediction dictionaries
         """
         self.logger.section("BATCH PREDICTION")
-        self.logger.info(f"📊 Processing {len(image_paths):,} images")
+        self.logger.info(f"[PROCESSING] Processing {len(image_paths):,} images")
         
         results = []
         
@@ -194,7 +196,7 @@ class CellexInference:
                     result = self.predict_single(image_path, use_tta=use_tta)
                     results.append(result)
                 except Exception as e:
-                    self.logger.error(f"❌ Failed to process {image_path}: {str(e)}")
+                    self.logger.error(f"[ERROR] Failed to process {image_path}: {str(e)}")
                     # Add placeholder result for failed images
                     results.append({
                         'image_path': str(image_path),
@@ -205,7 +207,7 @@ class CellexInference:
                         'error': str(e)
                     })
         
-        self.logger.success(f"✅ Batch prediction completed: {len(results):,} results")
+        self.logger.success(f"Batch prediction completed: {len(results):,} results")
         return results
     
     def _load_image(self, image_path: str) -> np.ndarray:
@@ -224,7 +226,7 @@ class CellexInference:
             return image
             
         except Exception as e:
-            self.logger.error(f"❌ Error loading image {image_path}: {str(e)}")
+            self.logger.error(f"[ERROR] Error loading image {image_path}: {str(e)}")
             raise
     
     def _predict_single_image(self, image: np.ndarray) -> Tuple[int, np.ndarray]:
@@ -266,35 +268,40 @@ class CellexInference:
     def _get_attention_visualization(self, image: np.ndarray) -> Optional[str]:
         """Generate attention visualization using GradCAM."""
         if not GRADCAM_AVAILABLE:
+            self.logger.info("[INFO] GradCAM not available - returning None")
             return None
         
         try:
-            # Prepare image for GradCAM
-            transform = self.transforms.get_test_transforms()
-            augmented = transform(image=image)
-            input_tensor = augmented['image'].unsqueeze(0).to(self.device)
+            # GradCAM is temporarily disabled for compatibility
+            self.logger.info("[INFO] GradCAM temporarily disabled for scipy compatibility")
+            return None
             
-            # Get target layer (last convolutional layer)
-            target_layers = [self.model.backbone.features[-1]]
-            
-            # Create GradCAM
-            cam = GradCAM(model=self.model, target_layers=target_layers, use_cuda=torch.cuda.is_available())
-            
-            # Generate heatmap
-            grayscale_cam = cam(input_tensor=input_tensor)
-            grayscale_cam = grayscale_cam[0, :]
-            
-            # Overlay on original image
-            rgb_img = cv2.resize(image, self.config.data.image_size) / 255.0
-            visualization = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
-            
-            # Save visualization (optional)
-            # Could return base64 encoded image or save to file
-            
-            return "attention_map_generated"  # Placeholder
+            # # Prepare image for GradCAM (commented out for now)
+            # transform = self.transforms.get_test_transforms()
+            # augmented = transform(image=image)
+            # input_tensor = augmented['image'].unsqueeze(0).to(self.device)
+            # 
+            # # Get target layer (last convolutional layer)
+            # target_layers = [self.model.backbone.features[-1]]
+            # 
+            # # Create GradCAM
+            # cam = GradCAM(model=self.model, target_layers=target_layers, use_cuda=torch.cuda.is_available())
+            # 
+            # # Generate heatmap
+            # grayscale_cam = cam(input_tensor=input_tensor)
+            # grayscale_cam = grayscale_cam[0, :]
+            # 
+            # # Overlay on original image
+            # rgb_img = cv2.resize(image, self.config.data.image_size) / 255.0
+            # visualization = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
+            # 
+            # # Save visualization (optional)
+            # # Could return base64 encoded image or save to file
+            # 
+            # return "attention_map_generated"  # Placeholder
             
         except Exception as e:
-            self.logger.error(f"❌ GradCAM visualization failed: {str(e)}")
+            self.logger.error(f"[ERROR] GradCAM visualization failed: {str(e)}")
             return None
     
     def evaluate_performance(self, 
@@ -355,7 +362,7 @@ class CellexInference:
                 })
                 
             except Exception as e:
-                self.logger.error(f"❌ Evaluation failed for {sample['image_path']}: {str(e)}")
+                self.logger.error(f"[ERROR] Evaluation failed for {sample['image_path']}: {str(e)}")
         
         # Calculate metrics
         accuracy = correct_predictions / total_predictions if total_predictions > 0 else 0
@@ -398,7 +405,7 @@ class CellexInference:
             with open(results_path, 'w') as f:
                 json.dump(full_results, f, indent=2)
             
-            self.logger.success(f"✅ Detailed results saved to {results_path}")
+            self.logger.success(f"Detailed results saved to {results_path}")
         
         return performance
     
@@ -431,7 +438,7 @@ def main():
     model_path = Path("models") / "best_model.pth"
     
     if not model_path.exists():
-        logger.error("❌ Trained model not found!")
+        logger.error("[ERROR] Trained model not found!")
         logger.info("Please train the model first:")
         logger.info("python src/training/train.py")
         return
@@ -452,12 +459,12 @@ def main():
             return_attention=True
         )
         
-        logger.success("✅ Demo prediction completed")
-        logger.info(f"📊 Results: {json.dumps(result, indent=2)}")
+        logger.success("Demo prediction completed")
+        logger.info(f"[RESULTS] Results: {json.dumps(result, indent=2)}")
     else:
-        logger.info("ℹ️  No test image found for demo")
+        logger.info("[INFO] No test image found for demo")
     
-    logger.success("🎉 Inference system ready!")
+    logger.success("Inference system ready!")
 
 
 if __name__ == "__main__":

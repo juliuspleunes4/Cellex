@@ -267,4 +267,4 @@ if __name__ == "__main__":
     config = CellexConfig()
     os.makedirs("config", exist_ok=True)
     config.save_config("config/config.yaml")
-    print("✅ Default configuration saved to config/config.yaml")
+    print("[SUCCESS] Default configuration saved to config/config.yaml")

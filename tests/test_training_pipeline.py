@@ -13,7 +13,7 @@ import json
 
 def test_training_script_help():
     """Test that training script help works."""
-    print("\n🧪 TESTING TRAINING SCRIPT HELP")
+    print("\n[TEST] TESTING TRAINING SCRIPT HELP")
     print("=" * 50)
     
     try:
@@ -30,23 +30,23 @@ def test_training_script_help():
                     missing_options.append(option)
             
             if missing_options:
-                print(f"❌ Missing CLI options: {missing_options}")
+                print(f"[ERROR] Missing CLI options: {missing_options}")
                 return False
             
-            print("✅ All essential CLI options present")
+            print("[SUCCESS] All essential CLI options present")
             return True
         else:
-            print("❌ Training script help failed:")
+            print("[ERROR] Training script help failed:")
             print(result.stderr)
             return False
             
     except Exception as e:
-        print(f"❌ Error testing training help: {e}")
+        print(f"[ERROR] Error testing training help: {e}")
         return False
 
 def test_model_imports():
     """Test that model architectures can be imported."""
-    print("\n🧪 TESTING MODEL IMPORTS")
+    print("\n[TEST] TESTING MODEL IMPORTS")
     print("=" * 50)
     
     # Test model imports
@@ -56,13 +56,13 @@ def test_model_imports():
                               capture_output=True, text=True, timeout=15)
         
         if result.returncode == 0:
-            print("✅ Model imports working")
+            print("[SUCCESS] Model imports working")
         else:
-            print("❌ Model import errors:")
+            print("[ERROR] Model import errors:")
             print(result.stderr)
             return False
     except Exception as e:
-        print(f"❌ Error testing model imports: {e}")
+        print(f"[ERROR] Error testing model imports: {e}")
         return False
     
     # Test trainer imports
@@ -72,20 +72,20 @@ def test_model_imports():
                               capture_output=True, text=True, timeout=15)
         
         if result.returncode == 0:
-            print("✅ Trainer imports working")
+            print("[SUCCESS] Trainer imports working")
         else:
-            print("❌ Trainer import errors:")
+            print("[ERROR] Trainer import errors:")
             print(result.stderr)
             return False
     except Exception as e:
-        print(f"❌ Error testing trainer imports: {e}")
+        print(f"[ERROR] Error testing trainer imports: {e}")
         return False
     
     return True
 
 def test_training_initialization():
     """Test that training can initialize without errors."""
-    print("\n🧪 TESTING TRAINING INITIALIZATION")
+    print("\n[TEST] TESTING TRAINING INITIALIZATION")
     print("=" * 50)
     
     try:
@@ -97,24 +97,24 @@ def test_training_initialization():
         if ("Dataset validation" in result.stdout or 
             "not found" in result.stdout or 
             "processed data not found" in result.stdout.lower()):
-            print("✅ Training initialization working")
+            print("[SUCCESS] Training initialization working")
             return True
         else:
-            print("❌ Training initialization issues:")
+            print("[ERROR] Training initialization issues:")
             print("STDOUT:", result.stdout[:300])
             print("STDERR:", result.stderr[:300])
             return False
             
     except subprocess.TimeoutExpired:
-        print("⚠️ Training initialization timed out (might be downloading/processing data)")
+        print("[WARNING] Training initialization timed out (might be downloading/processing data)")
         return True
     except Exception as e:
-        print(f"❌ Error testing training initialization: {e}")
+        print(f"[ERROR] Error testing training initialization: {e}")
         return False
 
 def test_model_creation():
     """Test model creation functionality."""
-    print("\n🧪 TESTING MODEL CREATION")
+    print("\n[TEST] TESTING MODEL CREATION")
     print("=" * 50)
     
     # Test different model architectures
@@ -144,21 +144,21 @@ print(f'Forward pass successful, output shape: {{output.shape}}')
                                   capture_output=True, text=True, timeout=30)
             
             if result.returncode == 0:
-                print(f"✅ {model_name} model creation and forward pass working")
+                print(f"[SUCCESS] {model_name} model creation and forward pass working")
             else:
-                print(f"❌ {model_name} model creation failed:")
+                print(f"[ERROR] {model_name} model creation failed:")
                 print(result.stderr[:200])
                 return False
                 
         except Exception as e:
-            print(f"❌ Error testing {model_name}: {e}")
+            print(f"[ERROR] Error testing {model_name}: {e}")
             return False
     
     return True
 
 def test_loss_functions():
     """Test loss function creation."""
-    print("\n🧪 TESTING LOSS FUNCTIONS")
+    print("\n[TEST] TESTING LOSS FUNCTIONS")
     print("=" * 50)
     
     try:
@@ -182,20 +182,20 @@ print(f'Loss computation successful: {loss.item():.4f}')
                               capture_output=True, text=True, timeout=15)
         
         if result.returncode == 0:
-            print("✅ Loss functions working")
+            print("[SUCCESS] Loss functions working")
             return True
         else:
-            print("❌ Loss function errors:")
+            print("[ERROR] Loss function errors:")
             print(result.stderr)
             return False
             
     except Exception as e:
-        print(f"❌ Error testing loss functions: {e}")
+        print(f"[ERROR] Error testing loss functions: {e}")
         return False
 
 def test_optimizer_creation():
     """Test optimizer and scheduler creation."""
-    print("\n🧪 TESTING OPTIMIZERS & SCHEDULERS")
+    print("\n[TEST] TESTING OPTIMIZERS & SCHEDULERS")
     print("=" * 50)
     
     try:
@@ -222,20 +222,20 @@ print(f'Scheduler created: {type(scheduler).__name__}')
                               capture_output=True, text=True, timeout=15)
         
         if result.returncode == 0:
-            print("✅ Optimizers and schedulers working")
+            print("[SUCCESS] Optimizers and schedulers working")
             return True
         else:
-            print("❌ Optimizer/scheduler errors:")
+            print("[ERROR] Optimizer/scheduler errors:")
             print(result.stderr)
             return False
             
     except Exception as e:
-        print(f"❌ Error testing optimizers: {e}")
+        print(f"[ERROR] Error testing optimizers: {e}")
         return False
 
 def run_all_training_tests():
     """Run all training pipeline tests."""
-    print("🧪 CELLEX TRAINING PIPELINE TESTS")
+    print("[TEST] CELLEX TRAINING PIPELINE TESTS")
     print("=" * 60)
     
     test_results = []
@@ -255,18 +255,18 @@ def run_all_training_tests():
             result = test_func()
             test_results.append((test_name, result))
         except Exception as e:
-            print(f"❌ {test_name} failed with exception: {e}")
+            print(f"[ERROR] {test_name} failed with exception: {e}")
             test_results.append((test_name, False))
     
     # Summary
-    print("\n📊 TEST RESULTS SUMMARY")
+    print("\n[STATS] TEST RESULTS SUMMARY")
     print("=" * 60)
     
     passed = 0
     total = len(test_results)
     
     for test_name, result in test_results:
-        status = "✅ PASSED" if result else "❌ FAILED"
+        status = "[SUCCESS] PASSED" if result else "[ERROR] FAILED"
         print(f"{test_name:.<35} {status}")
         if result:
             passed += 1
@@ -275,10 +275,10 @@ def run_all_training_tests():
     print(f"Tests passed: {passed}/{total}")
     
     if passed == total:
-        print("🎉 All training pipeline tests passed!")
+        print("[COMPLETE] All training pipeline tests passed!")
         return True
     else:
-        print("⚠️ Some tests failed - check output above")
+        print("[WARNING] Some tests failed - check output above")
         return False
 
 if __name__ == "__main__":

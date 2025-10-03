@@ -129,7 +129,7 @@ class CellexLogger:
     
     def success(self, message: str):
         """Log success message (custom level)."""
-        self.info(f"{Fore.GREEN}✅ {message}{Style.RESET_ALL}")
+        self.info(f"{Fore.GREEN}[SUCCESS] {message}{Style.RESET_ALL}")
     
     def section(self, title: str):
         """Log section header."""
@@ -147,17 +147,17 @@ class CellexLogger:
     
     def metric(self, name: str, value: float, unit: str = ""):
         """Log a metric with formatting."""
-        self.info(f"{Fore.YELLOW}📊 {name}: {Fore.WHITE}{value:.4f} {unit}{Style.RESET_ALL}")
+        self.info(f"{Fore.YELLOW}[METRIC] {name}: {Fore.WHITE}{value:.4f} {unit}{Style.RESET_ALL}")
     
     def progress(self, current: int, total: int, description: str = ""):
         """Log progress information."""
         percentage = (current / total) * 100
         bar_length = 30
         filled_length = int(bar_length * current // total)
-        bar = "█" * filled_length + "░" * (bar_length - filled_length)
+        bar = "#" * filled_length + "-" * (bar_length - filled_length)
         
         self.info(
-            f"{Fore.CYAN}🔄 {description} "
+            f"{Fore.CYAN}[PROGRESS] {description} "
             f"{Fore.WHITE}[{bar}] "
             f"{Fore.GREEN}{percentage:5.1f}% "
             f"{Fore.WHITE}({current}/{total}){Style.RESET_ALL}"
@@ -174,7 +174,7 @@ class CellexLogger:
         """Log model information."""
         params_str = f"{params:,}" if params < 1_000_000 else f"{params/1_000_000:.1f}M"
         self.info(
-            f"{Fore.BLUE}🧠 Model: {Fore.WHITE}{model_name} "
+            f"{Fore.BLUE}[MODEL] Model: {Fore.WHITE}{model_name} "
             f"{Fore.BLUE}| Parameters: {Fore.WHITE}{params_str}{Style.RESET_ALL}"
         )
     
@@ -191,18 +191,18 @@ class CellexLogger:
     def banner(self, text: str):
         """Display a professional banner."""
         width = max(60, len(text) + 10)
-        border = "═" * width
+        border = "=" * width
         
         print(f"\n{Fore.CYAN}{border}")
-        print(f"{Fore.CYAN}║{' ' * ((width - len(text)) // 2)}{Fore.WHITE}{Style.BRIGHT}{text}{Style.RESET_ALL}{Fore.CYAN}{' ' * ((width - len(text)) // 2)}║")
+        print(f"{Fore.CYAN}|{' ' * ((width - len(text)) // 2)}{Fore.WHITE}{Style.BRIGHT}{text}{Style.RESET_ALL}{Fore.CYAN}{' ' * ((width - len(text)) // 2)}|")
         print(f"{Fore.CYAN}{border}{Style.RESET_ALL}\n")
     
     def welcome(self):
         """Display welcome banner for Cellex."""
         self.banner("CELLEX CANCER DETECTION SYSTEM")
-        self.info(f"{Fore.WHITE}🏥 Advanced AI-Powered Medical Imaging Analysis")
-        self.info(f"{Fore.WHITE}🔬 Built by AI Scientists for Medical Professionals")
-        self.info(f"{Fore.WHITE}📅 Session Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        self.info(f"{Fore.WHITE}[MEDICAL] Advanced AI-Powered Medical Imaging Analysis")
+        self.info(f"{Fore.WHITE}[RESEARCH] Built by AI Scientists for Medical Professionals")
+        self.info(f"{Fore.WHITE}[SESSION] Session Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         self.info(f"{Fore.CYAN}{'=' * 60}{Style.RESET_ALL}\n")
 
 

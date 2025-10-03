@@ -25,14 +25,14 @@ def print_banner():
     """Print Cellex banner."""
     banner = f"""
 {Colors.OKCYAN}
-╔═══════════════════════════════════════════════════════════════════╗
-║                                                                   ║
-║           🏥 CELLEX CANCER DETECTION SYSTEM 🏥                    ║
-║                                                                   ║
-║         Advanced AI-Powered Medical Imaging Analysis              ║
-║           Built by AI Scientists for Medical Professionals       ║
-║                                                                   ║
-╚═══════════════════════════════════════════════════════════════════╝
+[SYMBOL]
+[SYMBOL]                                                                   [SYMBOL]
+[SYMBOL]           [MEDICAL] CELLEX CANCER DETECTION SYSTEM [MEDICAL]                    [SYMBOL]
+[SYMBOL]                                                                   [SYMBOL]
+[SYMBOL]         Advanced AI-Powered Medical Imaging Analysis              [SYMBOL]
+[SYMBOL]           Built by AI Scientists for Medical Professionals       [SYMBOL]
+[SYMBOL]                                                                   [SYMBOL]
+[SYMBOL]
 {Colors.ENDC}
     """
     print(banner)
@@ -40,7 +40,7 @@ def print_banner():
 
 def run_command(command, description):
     """Run a command with error handling."""
-    print(f"{Colors.OKBLUE}🔄 {description}...{Colors.ENDC}")
+    print(f"{Colors.OKBLUE}[PROGRESS] {description}...{Colors.ENDC}")
     
     try:
         result = subprocess.run(
@@ -50,10 +50,10 @@ def run_command(command, description):
             capture_output=True, 
             text=True
         )
-        print(f"{Colors.OKGREEN}✅ {description} completed successfully{Colors.ENDC}")
+        print(f"{Colors.OKGREEN}[SUCCESS] {description} completed successfully{Colors.ENDC}")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"{Colors.FAIL}❌ {description} failed: {e}{Colors.ENDC}")
+        print(f"{Colors.FAIL}[ERROR] {description} failed: {e}{Colors.ENDC}")
         if e.stdout:
             print(f"STDOUT: {e.stdout}")
         if e.stderr:
@@ -63,27 +63,27 @@ def run_command(command, description):
 
 def check_python_version():
     """Check if Python version is compatible."""
-    print(f"{Colors.OKBLUE}🐍 Checking Python version...{Colors.ENDC}")
+    print(f"{Colors.OKBLUE}[PYTHON] Checking Python version...{Colors.ENDC}")
     
     version = sys.version_info
     if version.major != 3 or version.minor < 8:
-        print(f"{Colors.FAIL}❌ Python 3.8+ required. Current: {version.major}.{version.minor}.{version.micro}{Colors.ENDC}")
+        print(f"{Colors.FAIL}[ERROR] Python 3.8+ required. Current: {version.major}.{version.minor}.{version.micro}{Colors.ENDC}")
         return False
     
-    print(f"{Colors.OKGREEN}✅ Python {version.major}.{version.minor}.{version.micro} is compatible{Colors.ENDC}")
+    print(f"{Colors.OKGREEN}[SUCCESS] Python {version.major}.{version.minor}.{version.micro} is compatible{Colors.ENDC}")
     return True
 
 
 def check_pip():
     """Check if pip is available."""
-    print(f"{Colors.OKBLUE}📦 Checking pip...{Colors.ENDC}")
+    print(f"{Colors.OKBLUE}[SYMBOL] Checking pip...{Colors.ENDC}")
     
     try:
         subprocess.run([sys.executable, "-m", "pip", "--version"], check=True, capture_output=True)
-        print(f"{Colors.OKGREEN}✅ pip is available{Colors.ENDC}")
+        print(f"{Colors.OKGREEN}[SUCCESS] pip is available{Colors.ENDC}")
         return True
     except subprocess.CalledProcessError:
-        print(f"{Colors.FAIL}❌ pip not found{Colors.ENDC}")
+        print(f"{Colors.FAIL}[ERROR] pip not found{Colors.ENDC}")
         return False
 
 
@@ -92,7 +92,7 @@ def install_requirements():
     requirements_file = Path("requirements.txt")
     
     if not requirements_file.exists():
-        print(f"{Colors.FAIL}❌ requirements.txt not found{Colors.ENDC}")
+        print(f"{Colors.FAIL}[ERROR] requirements.txt not found{Colors.ENDC}")
         return False
     
     # Upgrade pip first
@@ -106,7 +106,7 @@ def install_requirements():
 
 def create_directories():
     """Create necessary directories."""
-    print(f"{Colors.OKBLUE}📁 Creating directories...{Colors.ENDC}")
+    print(f"{Colors.OKBLUE}[FOLDER] Creating directories...{Colors.ENDC}")
     
     directories = [
         "data/raw",
@@ -121,22 +121,22 @@ def create_directories():
         Path(directory).mkdir(parents=True, exist_ok=True)
         print(f"   Created: {directory}")
     
-    print(f"{Colors.OKGREEN}✅ Directories created successfully{Colors.ENDC}")
+    print(f"{Colors.OKGREEN}[SUCCESS] Directories created successfully{Colors.ENDC}")
     return True
 
 
 def setup_kaggle():
     """Guide user through Kaggle setup."""
-    print(f"{Colors.OKBLUE}🔑 Kaggle API Setup{Colors.ENDC}")
+    print(f"{Colors.OKBLUE}[SYMBOL] Kaggle API Setup{Colors.ENDC}")
     
     kaggle_dir = Path.home() / ".kaggle"
     kaggle_json = kaggle_dir / "kaggle.json"
     
     if kaggle_json.exists():
-        print(f"{Colors.OKGREEN}✅ Kaggle credentials already configured{Colors.ENDC}")
+        print(f"{Colors.OKGREEN}[SUCCESS] Kaggle credentials already configured{Colors.ENDC}")
         return True
     
-    print(f"{Colors.WARNING}⚠️  Kaggle credentials not found{Colors.ENDC}")
+    print(f"{Colors.WARNING}[WARNING]  Kaggle credentials not found{Colors.ENDC}")
     print("To download datasets, you need to setup Kaggle API credentials:")
     print("1. Go to https://www.kaggle.com/account")
     print("2. Click 'Create New API Token'")
@@ -150,19 +150,19 @@ def setup_kaggle():
     
     if response.lower() in ['y', 'yes']:
         if kaggle_json.exists():
-            print(f"{Colors.OKGREEN}✅ Kaggle setup verified{Colors.ENDC}")
+            print(f"{Colors.OKGREEN}[SUCCESS] Kaggle setup verified{Colors.ENDC}")
             return True
         else:
-            print(f"{Colors.WARNING}⚠️  kaggle.json still not found at {kaggle_json}{Colors.ENDC}")
+            print(f"{Colors.WARNING}[WARNING]  kaggle.json still not found at {kaggle_json}{Colors.ENDC}")
             return False
     else:
-        print(f"{Colors.WARNING}⚠️  Kaggle setup skipped - you can set it up later{Colors.ENDC}")
+        print(f"{Colors.WARNING}[WARNING]  Kaggle setup skipped - you can set it up later{Colors.ENDC}")
         return False
 
 
 def create_config():
     """Create default configuration."""
-    print(f"{Colors.OKBLUE}⚙️  Creating default configuration...{Colors.ENDC}")
+    print(f"{Colors.OKBLUE}[SYMBOL][INFO]  Creating default configuration...{Colors.ENDC}")
     
     config_dir = Path("config")
     config_dir.mkdir(exist_ok=True)
@@ -170,16 +170,16 @@ def create_config():
     # Run config creation
     try:
         subprocess.run([sys.executable, "config/config.py"], check=True)
-        print(f"{Colors.OKGREEN}✅ Configuration created{Colors.ENDC}")
+        print(f"{Colors.OKGREEN}[SUCCESS] Configuration created{Colors.ENDC}")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"{Colors.FAIL}❌ Configuration creation failed: {e}{Colors.ENDC}")
+        print(f"{Colors.FAIL}[ERROR] Configuration creation failed: {e}{Colors.ENDC}")
         return False
 
 
 def test_installation():
     """Test if installation works."""
-    print(f"{Colors.OKBLUE}🧪 Testing installation...{Colors.ENDC}")
+    print(f"{Colors.OKBLUE}[TEST] Testing installation...{Colors.ENDC}")
     
     # Test imports
     test_commands = [
@@ -190,7 +190,7 @@ def test_installation():
         if not run_command(command, f"Testing: {command.split('import')[1].split(';')[0].strip()}"):
             return False
     
-    print(f"{Colors.OKGREEN}✅ Installation test passed{Colors.ENDC}")
+    print(f"{Colors.OKGREEN}[SUCCESS] Installation test passed{Colors.ENDC}")
     return True
 
 
@@ -198,7 +198,7 @@ def print_next_steps():
     """Print next steps for the user."""
     print(f"""
 {Colors.HEADER}{Colors.BOLD}
-🎉 CELLEX SETUP COMPLETED SUCCESSFULLY! 🎉
+[COMPLETE] CELLEX SETUP COMPLETED SUCCESSFULLY! [COMPLETE]
 {Colors.ENDC}
 
 {Colors.OKCYAN}Next Steps:{Colors.ENDC}
@@ -216,14 +216,14 @@ def print_next_steps():
    python main.py --mode pipeline
 
 {Colors.OKCYAN}Documentation:{Colors.ENDC}
-   📖 README.md - Project overview
-   📋 CHANGELOG.md - Development history
-   ⚙️  config/config.py - Configuration options
+   [SYMBOL] README.md - Project overview
+   [SYMBOL] CHANGELOG.md - Development history
+   [SYMBOL][INFO]  config/config.py - Configuration options
 
 {Colors.OKCYAN}Need Help?{Colors.ENDC}
    python main.py --help
 
-{Colors.OKGREEN}Happy detecting! 🔬🏥{Colors.ENDC}
+{Colors.OKGREEN}Happy detecting! [RESEARCH][MEDICAL]{Colors.ENDC}
     """)
 
 
@@ -243,7 +243,7 @@ def main():
     
     failed_steps = []
     
-    print(f"{Colors.HEADER}{Colors.BOLD}🚀 Starting Cellex Setup Process{Colors.ENDC}\n")
+    print(f"{Colors.HEADER}{Colors.BOLD}[LAUNCH] Starting Cellex Setup Process{Colors.ENDC}\n")
     
     for step_name, step_function in setup_steps:
         print(f"{Colors.OKCYAN}{'='*50}")
@@ -259,10 +259,10 @@ def main():
     if not failed_steps:
         print_next_steps()
     else:
-        print(f"{Colors.FAIL}{Colors.BOLD}❌ Setup completed with errors:{Colors.ENDC}")
+        print(f"{Colors.FAIL}{Colors.BOLD}[ERROR] Setup completed with errors:{Colors.ENDC}")
         for step in failed_steps:
             print(f"   - {step}")
-        print(f"\n{Colors.WARNING}⚠️  Please fix the above issues and run setup again{Colors.ENDC}")
+        print(f"\n{Colors.WARNING}[WARNING]  Please fix the above issues and run setup again{Colors.ENDC}")
         return False
     
     return True

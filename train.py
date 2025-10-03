@@ -203,7 +203,7 @@ def save_training_config(config, results_dir: Path):
     with open(config_file, 'w') as f:
         json.dump(config_dict, f, indent=2)
     
-    print(f"💾 Configuration saved: {config_file}")
+    print(f"[SYMBOL] Configuration saved: {config_file}")
 
 def safe_print(text):
     """Print text with fallback for encoding issues."""
@@ -364,8 +364,8 @@ def main():
         
         # Validate dataset
         if not data_dir.exists():
-            print(f"❌ Dataset not found: {data_dir}")
-            print("💡 Please run data download and processing:")
+            print(f"[ERROR] Dataset not found: {data_dir}")
+            print("[SYMBOL] Please run data download and processing:")
             print("   python src/data/download_data.py")
             print("   python verify_dataset.py")
             return False
@@ -374,7 +374,7 @@ def main():
         print_dataset_info(validation_results)
         
         if not validation_results['valid']:
-            print("\n❌ Dataset validation failed!")
+            print("\n[ERROR] Dataset validation failed!")
             return False
         
         if args.validate_only:
@@ -389,7 +389,7 @@ def main():
         save_training_config(config, results_dir)
         
         # Print training configuration
-        print("\n🔧 TRAINING CONFIGURATION")
+        print("\n[FIX] TRAINING CONFIGURATION")
         print("="*40)
         print(f"Model: {config.model.backbone}")
         print(f"Classes: {config.model.num_classes} (0=Healthy, 1=Cancer)")
@@ -403,25 +403,25 @@ def main():
         resume_path = resolve_checkpoint_path(args.resume) if args.resume else None
         
         # Initialize trainer
-        print("\n🚀 INITIALIZING TRAINER")
+        print("\n[LAUNCH] INITIALIZING TRAINER")
         print("="*40)
         trainer = CellexTrainer(config, resume_from=resume_path)
         
         # Start training
-        print("\n🏋️ STARTING TRAINING")
+        print("\n[SYMBOL][INFO] STARTING TRAINING")
         print("="*40)
         safe_print("Goal: Learn to distinguish healthy tissue from cancer")
-        print("📊 Metrics: Accuracy, Precision, Recall, F1-Score")
-        print("💾 Auto-save: Best model will be saved automatically")
-        print("⏱️  Time: Training time will vary based on dataset size")
+        print("[STATS] Metrics: Accuracy, Precision, Recall, F1-Score")
+        print("[SYMBOL] Auto-save: Best model will be saved automatically")
+        print("[TIMER][INFO]  Time: Training time will vary based on dataset size")
         
         # Resume from checkpoint if specified
         if resume_path:
-            print(f"📂 Resuming from checkpoint: {resume_path}")
-            print("💡 Press Ctrl+C anytime to safely stop and save progress")
+            print(f"[FILE] Resuming from checkpoint: {resume_path}")
+            print("[SYMBOL] Press Ctrl+C anytime to safely stop and save progress")
         else:
-            print("💡 Training will save checkpoints every 5 epochs")
-            print("💡 Press Ctrl+C anytime to safely stop and save progress")
+            print("[SYMBOL] Training will save checkpoints every 5 epochs")
+            print("[SYMBOL] Press Ctrl+C anytime to safely stop and save progress")
         
         # Run training
         training_results = trainer.train(str(data_dir))
@@ -441,33 +441,33 @@ def main():
             json.dump(training_results, f, indent=2)
         
         # Print final results
-        print("\n🎉 TRAINING COMPLETED SUCCESSFULLY!")
+        print("\n[COMPLETE] TRAINING COMPLETED SUCCESSFULLY!")
         print("="*60)
-        print(f"⏱️  Total Training Time: {hours}h {minutes}m {seconds}s")
-        print(f"🏆 Best Accuracy: {training_results.get('best_accuracy', 0):.4f}")
+        print(f"[TIMER][INFO]  Total Training Time: {hours}h {minutes}m {seconds}s")
+        print(f"[SYMBOL] Best Accuracy: {training_results.get('best_accuracy', 0):.4f}")
         safe_print(f"Results saved to: {results_dir}")
         safe_print(f"Best model saved automatically")
         safe_print(f"Checkpoints available for future training")
         safe_print("\nYour cancer detection AI is ready!")
-        print("💡 Test it with: python predict_image.py <medical_image.jpg>")
-        print("💡 View checkpoints: python train.py --list-checkpoints")
+        print("[SYMBOL] Test it with: python predict_image.py <medical_image.jpg>")
+        print("[SYMBOL] View checkpoints: python train.py --list-checkpoints")
         
         return True
         
     except ImportError as e:
-        print(f"\n❌ Import error: {e}")
-        print("💡 Solution: Install required packages")
+        print(f"\n[ERROR] Import error: {e}")
+        print("[SYMBOL] Solution: Install required packages")
         print("   pip install -r requirements.txt")
         return False
         
     except KeyboardInterrupt:
-        print("\n\n⏹️  Training interrupted by user")
-        print("💡 You can resume training later with --resume option")
+        print("\n\n[SYMBOL][INFO]  Training interrupted by user")
+        print("[SYMBOL] You can resume training later with --resume option")
         return False
         
     except Exception as e:
-        print(f"\n❌ Training failed with error: {str(e)}")
-        print(f"🔍 Error type: {type(e).__name__}")
+        print(f"\n[ERROR] Training failed with error: {str(e)}")
+        print(f"[SYMBOL] Error type: {type(e).__name__}")
         
         # Save error log
         error_log = {
@@ -481,7 +481,7 @@ def main():
             error_file = results_dir / "error_log.json"
             with open(error_file, 'w') as f:
                 json.dump(error_log, f, indent=2)
-            print(f"🔍 Error details saved to: {error_file}")
+            print(f"[SYMBOL] Error details saved to: {error_file}")
         except:
             pass
         

@@ -78,15 +78,15 @@ class CellexEfficientNet(nn.Module):
             self.feature_dim = features.shape[1]
             self.feature_size = features.shape[-1]
         
-        self.logger.info(f"🧠 Backbone: {model_name}")
-        self.logger.info(f"📐 Feature dimensions: {self.feature_dim}")
-        self.logger.info(f"📐 Feature map size: {self.feature_size}x{self.feature_size}")
+        self.logger.info(f"[MODEL] Backbone: {model_name}")
+        self.logger.info(f"[SYMBOL] Feature dimensions: {self.feature_dim}")
+        self.logger.info(f"[SYMBOL] Feature map size: {self.feature_size}x{self.feature_size}")
         
         # Freeze backbone if requested
         if freeze_backbone:
             for param in self.backbone.parameters():
                 param.requires_grad = False
-            self.logger.info("🔒 Backbone frozen")
+            self.logger.info("[SYMBOL] Backbone frozen")
         
         # Attention mechanism
         self.attention = AttentionBlock(self.feature_dim)
@@ -245,7 +245,7 @@ class CellexEnsemble(nn.Module):
                 raise ValueError(f"Unsupported model type: {model_type}")
             
             self.models.append(model)
-            self.logger.info(f"🔗 Added model {i+1}: {config.get('name', 'Unknown')}")
+            self.logger.info(f"[SYMBOL] Added model {i+1}: {config.get('name', 'Unknown')}")
         
         # Ensemble combination layer (if using learned ensemble)
         if ensemble_method == "learned":
@@ -292,7 +292,7 @@ class FocalLoss(nn.Module):
     """
     Focal Loss for addressing class imbalance in medical imaging.
     
-    Reference: Lin, T. Y., Goyal, P., Girshick, R., He, K., & Dollár, P. (2017).
+    Reference: Lin, T. Y., Goyal, P., Girshick, R., He, K., & Doll[SYMBOL]r, P. (2017).
     Focal loss for dense object detection.
     """
     
@@ -350,7 +350,7 @@ def create_model(config) -> nn.Module:
         else:
             raise ValueError(f"Unsupported backbone: {config.model.backbone}")
     
-    logger.success(f"✅ Model created: {type(model).__name__}")
+    logger.success(f"Model created: {type(model).__name__}")
     return model
 
 
@@ -387,13 +387,13 @@ if __name__ == "__main__":
     # Test input
     dummy_input = torch.randn(2, 3, 224, 224)
     output = model(dummy_input)
-    logger.success(f"✅ Model output shape: {output.shape}")
+    logger.success(f"Model output shape: {output.shape}")
     
     # Test loss function
     logger.subsection("Testing Loss Function")
     loss_fn = create_loss_function(config)
     dummy_targets = torch.randint(0, 2, (2,))
     loss = loss_fn(output, dummy_targets)
-    logger.success(f"✅ Loss value: {loss.item():.4f}")
+    logger.success(f"Loss value: {loss.item():.4f}")
     
-    logger.success("🎉 All model tests passed!")
+    logger.success("All model tests passed!")

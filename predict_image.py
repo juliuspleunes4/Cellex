@@ -30,14 +30,14 @@ def predict_image(image_path: str, model_path: str = None):
             model_path = "models/best_model.pth"
             
         if not Path(model_path).exists():
-            logger.error(f"❌ Model not found: {model_path}")
-            logger.info("💡 Please train a model first:")
+            logger.error(f"[ERROR] Model not found: {model_path}")
+            logger.info("[SYMBOL] Please train a model first:")
             logger.info("   python start_training.py")
             return
         
-        logger.section("🔍 CELLEX CANCER DETECTION - PREDICTION")
-        logger.info(f"🖼️  Image: {image_path}")
-        logger.info(f"🧠 Model: {model_path}")
+        logger.section("[SYMBOL] CELLEX CANCER DETECTION - PREDICTION")
+        logger.info(f"[SYMBOL][INFO]  Image: {image_path}")
+        logger.info(f"[MODEL] Model: {model_path}")
         
         # Load model and predict
         predictor = CellexInference(model_path)
@@ -53,35 +53,35 @@ def predict_image(image_path: str, model_path: str = None):
         normal_prob = result['probabilities']['normal'] * 100  
         cancer_prob = result['probabilities']['cancer'] * 100
         
-        logger.success(f"🎯 Prediction: {prediction}")
-        logger.info(f"📊 Confidence: {confidence:.1f}%")
-        logger.info(f"💚 Healthy probability: {normal_prob:.1f}%")
-        logger.info(f"🔴 Cancer probability: {cancer_prob:.1f}%")
+        logger.success(f"[TARGET] Prediction: {prediction}")
+        logger.info(f"[STATS] Confidence: {confidence:.1f}%")
+        logger.info(f"[SYMBOL] Healthy probability: {normal_prob:.1f}%")
+        logger.info(f"[SYMBOL] Cancer probability: {cancer_prob:.1f}%")
         
         # Interpretation
         if prediction == "Cancer":
             if confidence > 80:
-                logger.warning("⚠️  HIGH CONFIDENCE: Potential cancerous tissue detected")
+                logger.warning("[WARNING]  HIGH CONFIDENCE: Potential cancerous tissue detected")
             else:
-                logger.warning("⚠️  MODERATE CONFIDENCE: Possible cancerous tissue")
+                logger.warning("[WARNING]  MODERATE CONFIDENCE: Possible cancerous tissue")
                 
-            logger.info("💡 Recommendation: Consult with medical professional")
+            logger.info("[SYMBOL] Recommendation: Consult with medical professional")
         else:
             if confidence > 80:
-                logger.success("✅ HIGH CONFIDENCE: No cancer detected")
+                logger.success("[SUCCESS] HIGH CONFIDENCE: No cancer detected")
             else:
-                logger.info("✅ MODERATE CONFIDENCE: Likely healthy tissue")
+                logger.info("[SUCCESS] MODERATE CONFIDENCE: Likely healthy tissue")
                 
-        logger.info(f"⏱️  Processing time: {result['inference_time']:.3f}s")
+        logger.info(f"[TIMER][INFO]  Processing time: {result['inference_time']:.3f}s")
         
         return result
         
     except ImportError as e:
-        print(f"❌ Import error: {e}")
-        print("💡 Please install dependencies: pip install -r requirements.txt")
+        print(f"[ERROR] Import error: {e}")
+        print("[SYMBOL] Please install dependencies: pip install -r requirements.txt")
         
     except Exception as e:
-        print(f"❌ Prediction failed: {e}")
+        print(f"[ERROR] Prediction failed: {e}")
 
 def main():
     """Main prediction function."""
@@ -92,7 +92,7 @@ def main():
     args = parser.parse_args()
     
     if not Path(args.image).exists():
-        print(f"❌ Image not found: {args.image}")
+        print(f"[ERROR] Image not found: {args.image}")
         return
         
     predict_image(args.image, args.model)

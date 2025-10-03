@@ -85,7 +85,7 @@ class CellexDataDownloader:
             kaggle_path = Path.home() / ".kaggle" / "kaggle.json"
             
             if not kaggle_path.exists():
-                self.logger.error("❌ Kaggle API credentials not found!")
+                self.logger.error("[ERROR] Kaggle API credentials not found!")
                 self.logger.info("Please follow these steps:")
                 self.logger.info("1. Go to https://www.kaggle.com/account")
                 self.logger.info("2. Click 'Create New API Token'")
@@ -102,7 +102,7 @@ class CellexDataDownloader:
             return True
             
         except Exception as e:
-            self.logger.error(f"❌ Kaggle setup error: {str(e)}")
+            self.logger.error(f"[ERROR] Kaggle setup error: {str(e)}")
             return False
     
     def display_dataset_info(self):
@@ -113,7 +113,7 @@ class CellexDataDownloader:
         total_samples = 0
         
         for dataset_id, info in self.datasets.items():
-            self.logger.info(f"\n📊 {info['name']}")
+            self.logger.info(f"\n[STATS] {info['name']}")
             self.logger.info(f"   Path: {info['kaggle_path']}")
             self.logger.info(f"   Size: {info['size_gb']:.1f} GB")
             self.logger.info(f"   Samples: {info['samples']:,}")
@@ -130,7 +130,7 @@ class CellexDataDownloader:
     def download_dataset(self, dataset_key: str, force_download: bool = False) -> bool:
         """Download a specific dataset."""
         if dataset_key not in self.datasets:
-            self.logger.error(f"❌ Unknown dataset: {dataset_key}")
+            self.logger.error(f"[ERROR] Unknown dataset: {dataset_key}")
             return False
         
         dataset_info = self.datasets[dataset_key]
@@ -140,13 +140,13 @@ class CellexDataDownloader:
         # Check if already downloaded
         dataset_dir = self.raw_data_path / dataset_key
         if dataset_dir.exists() and not force_download:
-            self.logger.success(f"✅ {dataset_name} already downloaded")
+            self.logger.success(f"[SUCCESS] {dataset_name} already downloaded")
             return True
         
         try:
             self.logger.subsection(f"DOWNLOADING {dataset_name.upper()}")
-            self.logger.info(f"📥 Downloading from: {kaggle_path}")
-            self.logger.info(f"💾 Size: {dataset_info['size_gb']:.1f} GB")
+            self.logger.info(f"[SYMBOL] Downloading from: {kaggle_path}")
+            self.logger.info(f"[SYMBOL] Size: {dataset_info['size_gb']:.1f} GB")
             
             # Create dataset directory
             dataset_dir.mkdir(exist_ok=True)
@@ -163,18 +163,18 @@ class CellexDataDownloader:
                 unzip=True
             )
             
-            self.logger.success(f"✅ {dataset_name} downloaded successfully!")
+            self.logger.success(f"[SUCCESS] {dataset_name} downloaded successfully!")
             
             # Verify download
             if self._verify_download(dataset_dir, dataset_info):
-                self.logger.success("✅ Download verification passed")
+                self.logger.success("[SUCCESS] Download verification passed")
                 return True
             else:
-                self.logger.error("❌ Download verification failed")
+                self.logger.error("[ERROR] Download verification failed")
                 return False
                 
         except Exception as e:
-            self.logger.error(f"❌ Download failed for {dataset_name}: {str(e)}")
+            self.logger.error(f"[ERROR] Download failed for {dataset_name}: {str(e)}")
             return False
     
     def _verify_download(self, dataset_dir: Path, dataset_info: Dict) -> bool:
@@ -189,14 +189,14 @@ class CellexDataDownloader:
             
             # Basic verification - should have some files
             if file_count > 100:  # Reasonable threshold
-                self.logger.info(f"📁 Found {file_count:,} files in dataset")
+                self.logger.info(f"[FOLDER] Found {file_count:,} files in dataset")
                 return True
             else:
-                self.logger.warning(f"⚠️  Only {file_count} files found - may be incomplete")
+                self.logger.warning(f"[WARNING]  Only {file_count} files found - may be incomplete")
                 return False
                 
         except Exception as e:
-            self.logger.error(f"❌ Verification error: {str(e)}")
+            self.logger.error(f"[ERROR] Verification error: {str(e)}")
             return False
     
     def download_all_datasets(self, force_download: bool = False):
@@ -219,10 +219,10 @@ class CellexDataDownloader:
         self.logger.metric("Successful Downloads", successful_downloads, f"/{total_datasets}")
         
         if successful_downloads == total_datasets:
-            self.logger.success("🎉 All datasets downloaded successfully!")
+            self.logger.success("[COMPLETE] All datasets downloaded successfully!")
         else:
             failed = total_datasets - successful_downloads
-            self.logger.warning(f"⚠️  {failed} dataset(s) failed to download")
+            self.logger.warning(f"[WARNING]  {failed} dataset(s) failed to download")
         
         return successful_downloads == total_datasets
     
@@ -260,7 +260,7 @@ class CellexDataDownloader:
         # Check if already processed
         unified_path = self.processed_data_path / "unified"
         if self._is_unified_dataset_ready():
-            self.logger.info("✅ Unified cancer dataset already exists and ready!")
+            self.logger.info("[SUCCESS] Unified cancer dataset already exists and ready!")
             return unified_path
         
         import random
@@ -277,17 +277,17 @@ class CellexDataDownloader:
             (split_path / "healthy").mkdir(parents=True, exist_ok=True)
             (split_path / "cancer").mkdir(parents=True, exist_ok=True)
         
-        self.logger.info("📁 Created directory structure")
+        self.logger.info("[FOLDER] Created directory structure")
         
         # Collect all images with labels
         all_images = {"healthy": [], "cancer": []}
         
-        self.logger.info("🔍 Processing cancer datasets...")
+        self.logger.info("[SYMBOL] Processing cancer datasets...")
         
         # Process Chest CT Cancer Detection
         chest_ct_path = self.raw_data_path / "chest_cancer_ct" / "Data"
         if chest_ct_path.exists():
-            self.logger.info("📊 Processing Chest CT Cancer dataset...")
+            self.logger.info("[STATS] Processing Chest CT Cancer dataset...")
             for split in ["train", "test", "valid"]:
                 split_path = chest_ct_path / split
                 if split_path.exists():
@@ -310,7 +310,7 @@ class CellexDataDownloader:
         # Process Lung/Colon Histopathological
         lung_colon_path = self.raw_data_path / "lung_colon_cancer" / "lung_colon_image_set"
         if lung_colon_path.exists():
-            self.logger.info("📊 Processing Lung/Colon Histopathological dataset...")
+            self.logger.info("[STATS] Processing Lung/Colon Histopathological dataset...")
             
             # Lung images
             lung_path = lung_colon_path / "lung_image_sets"
@@ -350,7 +350,7 @@ class CellexDataDownloader:
         # Process Brain Tumor Classification
         brain_path = self.raw_data_path / "brain_tumor_classification"
         if brain_path.exists():
-            self.logger.info("📊 Processing Brain Tumor MRI dataset...")
+            self.logger.info("[STATS] Processing Brain Tumor MRI dataset...")
             for split in ["Training", "Testing"]:
                 split_path = brain_path / split
                 if split_path.exists():
@@ -378,9 +378,9 @@ class CellexDataDownloader:
         cancer_count = len(all_images["cancer"])
         total_count = healthy_count + cancer_count
         
-        self.logger.info(f"📊 Collected {healthy_count:,} healthy images")
-        self.logger.info(f"📊 Collected {cancer_count:,} cancer images")
-        self.logger.info(f"📊 Total: {total_count:,} images")
+        self.logger.info(f"[STATS] Collected {healthy_count:,} healthy images")
+        self.logger.info(f"[STATS] Collected {cancer_count:,} cancer images")
+        self.logger.info(f"[STATS] Total: {total_count:,} images")
         
         # Split into train/val/test
         def split_data(images, train_ratio, val_ratio, test_ratio):
@@ -405,7 +405,7 @@ class CellexDataDownloader:
                                  self.config.data.test_split)
         
         # Copy files to unified structure
-        self.logger.info("📁 Organizing images into train/val/test splits...")
+        self.logger.info("[FOLDER] Organizing images into train/val/test splits...")
         
         copy_count = 0
         for split in ["train", "val", "test"]:
@@ -418,7 +418,7 @@ class CellexDataDownloader:
                 copy_count += 1
                 
                 if copy_count % 1000 == 0:
-                    self.logger.info(f"📋 Copied {copy_count:,} images...")
+                    self.logger.info(f"[SYMBOL] Copied {copy_count:,} images...")
             
             # Copy cancer images  
             for i, src_img in enumerate(cancer_splits[split]):
@@ -427,19 +427,19 @@ class CellexDataDownloader:
                 copy_count += 1
                 
                 if copy_count % 1000 == 0:
-                    self.logger.info(f"� Copied {copy_count:,} images...")
+                    self.logger.info(f"[SYMBOL] Copied {copy_count:,} images...")
         
-        self.logger.success(f"✅ Successfully organized {copy_count:,} images!")
+        self.logger.success(f"[SUCCESS] Successfully organized {copy_count:,} images!")
         
         # Final statistics
         self.logger.subsection("DATASET ORGANIZATION")
-        self.logger.info(f"📁 Unified dataset path: {unified_path}")
+        self.logger.info(f"[FOLDER] Unified dataset path: {unified_path}")
         
         for split in ["train", "val", "test"]:
             split_path = unified_path / split
             healthy_count = len(list((split_path / "healthy").glob("*")))
             cancer_count = len(list((split_path / "cancer").glob("*")))
-            self.logger.info(f"📊 {split.capitalize():>5} - Healthy: {healthy_count:,}, Cancer: {cancer_count:,}")
+            self.logger.info(f"[STATS] {split.capitalize():>5} - Healthy: {healthy_count:,}, Cancer: {cancer_count:,}")
         
         return unified_path
     
@@ -463,14 +463,14 @@ class CellexDataDownloader:
     
     def cleanup_downloads(self):
         """Clean up temporary download files."""
-        self.logger.info("🧹 Cleaning up temporary files...")
+        self.logger.info("[SYMBOL] Cleaning up temporary files...")
         
         # Remove zip files
         for zip_file in self.raw_data_path.rglob("*.zip"):
             zip_file.unlink()
-            self.logger.info(f"🗑️  Removed: {zip_file.name}")
+            self.logger.info(f"[CLEANUP]  Removed: {zip_file.name}")
         
-        self.logger.success("✅ Cleanup completed")
+        self.logger.success("[SUCCESS] Cleanup completed")
 
 
 def main():
@@ -499,10 +499,10 @@ def main():
             # Create unified structure automatically
             try:
                 unified_path = downloader.create_unified_dataset()
-                downloader.logger.success(f"✅ Unified cancer detection dataset ready at: {unified_path}")
+                downloader.logger.success(f"[SUCCESS] Unified cancer detection dataset ready at: {unified_path}")
             except Exception as e:
-                downloader.logger.error(f"❌ Failed to create unified dataset: {str(e)}")
-                downloader.logger.info("💡 Raw datasets are available - you can process manually later")
+                downloader.logger.error(f"[ERROR] Failed to create unified dataset: {str(e)}")
+                downloader.logger.info("[SYMBOL] Raw datasets are available - you can process manually later")
             
             # Show statistics
             stats = downloader.get_dataset_statistics()
@@ -515,12 +515,12 @@ def main():
             # Cleanup
             downloader.cleanup_downloads()
             
-            downloader.logger.success("🎉 Data pipeline setup completed successfully!")
+            downloader.logger.success("[COMPLETE] Data pipeline setup completed successfully!")
         else:
-            downloader.logger.error("❌ Data download failed")
+            downloader.logger.error("[ERROR] Data download failed")
             return False
     else:
-        downloader.logger.info("📋 Dataset download skipped")
+        downloader.logger.info("[SYMBOL] Dataset download skipped")
     
     return True
 

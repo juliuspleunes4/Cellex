@@ -19,16 +19,16 @@ def setup_test_environment():
 
 def test_dataset_download():
     """Test dataset download functionality."""
-    print("\n🧪 TESTING DATASET DOWNLOAD")
+    print("\n[TEST] TESTING DATASET DOWNLOAD")
     print("=" * 50)
     
     # Test 1: Check if download script exists and is executable
     download_script = Path("src/data/download_data.py")
     if not download_script.exists():
-        print("❌ Download script not found")
+        print("[ERROR] Download script not found")
         return False
     
-    print("✅ Download script found")
+    print("[SUCCESS] Download script found")
     
     # Test 2: Check if script has proper imports
     try:
@@ -42,12 +42,12 @@ def test_dataset_download():
                     missing_imports.append(imp)
             
             if missing_imports:
-                print(f"❌ Missing imports: {missing_imports}")
+                print(f"[ERROR] Missing imports: {missing_imports}")
                 return False
             
-        print("✅ Required imports present")
+        print("[SUCCESS] Required imports present")
     except Exception as e:
-        print(f"❌ Error reading download script: {e}")
+        print(f"[ERROR] Error reading download script: {e}")
         return False
     
     # Test 3: Check if Kaggle API is configured (without actually downloading)
@@ -55,17 +55,17 @@ def test_dataset_download():
         result = subprocess.run([sys.executable, "-c", "import kaggle; print('Kaggle API available')"], 
                               capture_output=True, text=True, timeout=10)
         if result.returncode == 0:
-            print("✅ Kaggle API accessible")
+            print("[SUCCESS] Kaggle API accessible")
         else:
-            print("⚠️ Kaggle API not configured (expected in CI/testing)")
+            print("[WARNING] Kaggle API not configured (expected in CI/testing)")
     except Exception as e:
-        print("⚠️ Kaggle API test skipped (expected in CI/testing)")
+        print("[WARNING] Kaggle API test skipped (expected in CI/testing)")
     
     return True
 
 def test_dataset_validation():
     """Test dataset validation functionality."""
-    print("\n🧪 TESTING DATASET VALIDATION") 
+    print("\n[TEST] TESTING DATASET VALIDATION") 
     print("=" * 50)
     
     # Test 1: Check if validate-only flag works
@@ -78,25 +78,25 @@ def test_dataset_validation():
             ("Dataset validation" in result.stdout or 
              "PASSED" in result.stdout or 
              "not found" in result.stdout)):
-            print("✅ Dataset validation functionality working")
+            print("[SUCCESS] Dataset validation functionality working")
             return True
         else:
-            print("❌ Dataset validation not responding properly")
+            print("[ERROR] Dataset validation not responding properly")
             print("Return code:", result.returncode)
             print("Output:", result.stdout[:300])
             print("Errors:", result.stderr[:300])
             return False
             
     except subprocess.TimeoutExpired:
-        print("⚠️ Dataset validation timed out (expected if dataset is large)")
+        print("[WARNING] Dataset validation timed out (expected if dataset is large)")
         return True
     except Exception as e:
-        print(f"❌ Error testing dataset validation: {e}")
+        print(f"[ERROR] Error testing dataset validation: {e}")
         return False
 
 def test_data_processing():
     """Test data processing components."""
-    print("\n🧪 TESTING DATA PROCESSING")
+    print("\n[TEST] TESTING DATA PROCESSING")
     print("=" * 50)
     
     # Test 1: Check if data loader imports work
@@ -106,13 +106,13 @@ def test_data_processing():
                               capture_output=True, text=True, timeout=10)
         
         if result.returncode == 0:
-            print("✅ Data loader imports working")
+            print("[SUCCESS] Data loader imports working")
         else:
-            print("❌ Data loader import errors:")
+            print("[ERROR] Data loader import errors:")
             print(result.stderr)
             return False
     except Exception as e:
-        print(f"❌ Error testing data loader: {e}")
+        print(f"[ERROR] Error testing data loader: {e}")
         return False
     
     # Test 2: Check if transforms are properly defined
@@ -122,20 +122,20 @@ def test_data_processing():
                               capture_output=True, text=True, timeout=10)
         
         if result.returncode == 0:
-            print("✅ Data transforms working")
+            print("[SUCCESS] Data transforms working")
         else:
-            print("❌ Data transforms errors:")
+            print("[ERROR] Data transforms errors:")
             print(result.stderr)
             return False
     except Exception as e:
-        print(f"❌ Error testing transforms: {e}")
+        print(f"[ERROR] Error testing transforms: {e}")
         return False
     
     return True
 
 def test_config_system():
     """Test configuration management."""
-    print("\n🧪 TESTING CONFIGURATION SYSTEM")
+    print("\n[TEST] TESTING CONFIGURATION SYSTEM")
     print("=" * 50)
     
     # Test 1: Check if config can be imported and loaded
@@ -145,13 +145,13 @@ def test_config_system():
                               capture_output=True, text=True, timeout=10)
         
         if result.returncode == 0:
-            print("✅ Configuration system working")
+            print("[SUCCESS] Configuration system working")
         else:
-            print("❌ Configuration errors:")
+            print("[ERROR] Configuration errors:")
             print(result.stderr)
             return False
     except Exception as e:
-        print(f"❌ Error testing config: {e}")
+        print(f"[ERROR] Error testing config: {e}")
         return False
     
     # Test 2: Check if config.yaml can be generated
@@ -160,17 +160,17 @@ def test_config_system():
                               capture_output=True, text=True, timeout=15)
         
         if result.returncode == 0 and "config.yaml generated" in result.stdout:
-            print("✅ Config generation working")
+            print("[SUCCESS] Config generation working")
         else:
-            print("⚠️ Config generation test inconclusive")
+            print("[WARNING] Config generation test inconclusive")
     except Exception as e:
-        print(f"⚠️ Config generation test skipped: {e}")
+        print(f"[WARNING] Config generation test skipped: {e}")
     
     return True
 
 def run_all_data_tests():
     """Run all dataset and data processing tests."""
-    print("🧪 CELLEX DATA PIPELINE TESTS")
+    print("[TEST] CELLEX DATA PIPELINE TESTS")
     print("=" * 60)
     
     test_results = []
@@ -188,18 +188,18 @@ def run_all_data_tests():
             result = test_func()
             test_results.append((test_name, result))
         except Exception as e:
-            print(f"❌ {test_name} failed with exception: {e}")
+            print(f"[ERROR] {test_name} failed with exception: {e}")
             test_results.append((test_name, False))
     
     # Summary
-    print("\n📊 TEST RESULTS SUMMARY")
+    print("\n[STATS] TEST RESULTS SUMMARY")
     print("=" * 60)
     
     passed = 0
     total = len(test_results)
     
     for test_name, result in test_results:
-        status = "✅ PASSED" if result else "❌ FAILED"
+        status = "[SUCCESS] PASSED" if result else "[ERROR] FAILED"
         print(f"{test_name:.<30} {status}")
         if result:
             passed += 1
@@ -208,10 +208,10 @@ def run_all_data_tests():
     print(f"Tests passed: {passed}/{total}")
     
     if passed == total:
-        print("🎉 All data pipeline tests passed!")
+        print("[COMPLETE] All data pipeline tests passed!")
         return True
     else:
-        print("⚠️ Some tests failed - check output above")
+        print("[WARNING] Some tests failed - check output above")
         return False
 
 if __name__ == "__main__":

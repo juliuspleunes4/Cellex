@@ -54,8 +54,8 @@ class CellexDataset(Dataset):
         # Validate inputs
         assert len(image_paths) == len(labels), "Mismatch between images and labels"
         
-        self.logger.info(f"📊 Dataset initialized: {len(image_paths):,} samples")
-        self.logger.info(f"📐 Image size: {image_size[0]}x{image_size[1]}")
+        self.logger.info(f"[STATS] Dataset initialized: {len(image_paths):,} samples")
+        self.logger.info(f"[SYMBOL] Image size: {image_size[0]}x{image_size[1]}")
         
         # Calculate class distribution
         unique, counts = np.unique(labels, return_counts=True)
@@ -64,7 +64,7 @@ class CellexDataset(Dataset):
         for class_id, count in class_dist.items():
             percentage = (count / len(labels)) * 100
             class_name = "Normal" if class_id == 0 else "Cancer"
-            self.logger.info(f"📈 Class {class_id} ({class_name}): {count:,} samples ({percentage:.1f}%)")
+            self.logger.info(f"[SYMBOL] Class {class_id} ({class_name}): {count:,} samples ({percentage:.1f}%)")
     
     def __len__(self) -> int:
         return len(self.image_paths)
@@ -92,7 +92,7 @@ class CellexDataset(Dataset):
             return image, label
             
         except Exception as e:
-            self.logger.error(f"❌ Error loading image {idx}: {str(e)}")
+            self.logger.error(f"[ERROR] Error loading image {idx}: {str(e)}")
             # Return a blank image and label 0 as fallback
             blank_image = torch.zeros(3, *self.image_size)
             return blank_image, 0
@@ -120,7 +120,7 @@ class CellexDataset(Dataset):
             return image
             
         except Exception as e:
-            self.logger.warning(f"⚠️  PIL failed for {image_path}, trying OpenCV: {str(e)}")
+            self.logger.warning(f"[WARNING]  PIL failed for {image_path}, trying OpenCV: {str(e)}")
             
             # Fallback to OpenCV
             try:
@@ -133,7 +133,7 @@ class CellexDataset(Dataset):
                 return image
                 
             except Exception as e2:
-                self.logger.error(f"❌ Both PIL and OpenCV failed for {image_path}: {str(e2)}")
+                self.logger.error(f"[ERROR] Both PIL and OpenCV failed for {image_path}: {str(e2)}")
                 # Return a blank image as last resort
                 return np.ones((*self.image_size, 3), dtype=np.uint8) * 128
 
@@ -190,7 +190,7 @@ class CellexTransforms:
             ToTensorV2()
         ])
         
-        self.logger.info("🎨 Training transforms created with medical-appropriate augmentations")
+        self.logger.info("[SYMBOL] Training transforms created with medical-appropriate augmentations")
         return transforms
     
     def get_val_transforms(self) -> A.Compose:
@@ -205,7 +205,7 @@ class CellexTransforms:
             ToTensorV2()
         ])
         
-        self.logger.info("📏 Validation transforms created")
+        self.logger.info("[TRANSFORMS] Validation transforms created")
         return transforms
     
     def get_test_transforms(self) -> A.Compose:
@@ -245,7 +245,7 @@ class CellexTransforms:
                 ToTensorV2()
             ]))
         
-        self.logger.info(f"🔄 Created {len(tta_transforms)} TTA transforms")
+        self.logger.info(f"[PROGRESS] Created {len(tta_transforms)} TTA transforms")
         return tta_transforms
 
 
@@ -283,7 +283,7 @@ class CellexDataLoader:
             split_path = data_path / split
             
             if not split_path.exists():
-                self.logger.error(f"❌ Split directory not found: {split_path}")
+                self.logger.error(f"[ERROR] Split directory not found: {split_path}")
                 continue
             
             # Collect images and labels
@@ -326,7 +326,7 @@ class CellexDataLoader:
             )
             
             datasets[split] = dataset
-            self.logger.success(f"✅ {split.capitalize()} dataset created: {len(dataset):,} samples")
+            self.logger.success(f"[SUCCESS] {split.capitalize()} dataset created: {len(dataset):,} samples")
         
         return datasets['train'], datasets['val'], datasets['test']
     
@@ -372,10 +372,10 @@ class CellexDataLoader:
             drop_last=False
         )
         
-        self.logger.success(f"✅ Data loaders created (batch_size={batch_size})")
-        self.logger.info(f"🔄 Train batches: {len(train_loader):,}")
-        self.logger.info(f"🔄 Val batches: {len(val_loader):,}")
-        self.logger.info(f"🔄 Test batches: {len(test_loader):,}")
+        self.logger.success(f"[SUCCESS] Data loaders created (batch_size={batch_size})")
+        self.logger.info(f"[PROGRESS] Train batches: {len(train_loader):,}")
+        self.logger.info(f"[PROGRESS] Val batches: {len(val_loader):,}")
+        self.logger.info(f"[PROGRESS] Test batches: {len(test_loader):,}")
         
         return train_loader, val_loader, test_loader
     
@@ -388,7 +388,7 @@ class CellexDataLoader:
         total_samples = len(labels)
         weights = total_samples / (len(unique) * counts)
         
-        self.logger.info("⚖️  Class weights calculated:")
+        self.logger.info("[BALANCE]  Class weights calculated:")
         for class_id, weight in zip(unique, weights):
             class_name = "Normal" if class_id == 0 else "Cancer"
             self.logger.info(f"   Class {class_id} ({class_name}): {weight:.4f}")
@@ -437,19 +437,19 @@ if __name__ == "__main__":
     train_transform = transforms.get_train_transforms()
     val_transform = transforms.get_val_transforms()
     
-    logger.success("✅ Transforms created successfully")
+    logger.success("[SUCCESS] Transforms created successfully")
     
     # Test with dummy data
     dummy_image = np.random.randint(0, 255, (224, 224, 3), dtype=np.uint8)
     
     try:
         augmented = train_transform(image=dummy_image)
-        logger.success(f"✅ Training transform output shape: {augmented['image'].shape}")
+        logger.success(f"[SUCCESS] Training transform output shape: {augmented['image'].shape}")
         
         augmented = val_transform(image=dummy_image)
-        logger.success(f"✅ Validation transform output shape: {augmented['image'].shape}")
+        logger.success(f"[SUCCESS] Validation transform output shape: {augmented['image'].shape}")
         
     except Exception as e:
-        logger.error(f"❌ Transform test failed: {str(e)}")
+        logger.error(f"[ERROR] Transform test failed: {str(e)}")
     
-    logger.success("🎉 Data pipeline tests completed!")
+    logger.success("[COMPLETE] Data pipeline tests completed!")

@@ -140,11 +140,11 @@ class CellexTrainer:
         
         # Set device
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.logger.info(f"🖥️  Device: {self.device}")
+        self.logger.info(f"[SYMBOL][INFO]  Device: {self.device}")
         
         if torch.cuda.is_available():
-            self.logger.info(f"🎮 GPU: {torch.cuda.get_device_name(0)}")
-            self.logger.info(f"💾 GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
+            self.logger.info(f"[SYMBOL] GPU: {torch.cuda.get_device_name(0)}")
+            self.logger.info(f"[SYMBOL] GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
         
         # Initialize mixed precision
         self.use_amp = torch.cuda.is_available()
@@ -185,9 +185,9 @@ class CellexTrainer:
         if MLFLOW_AVAILABLE and self.config.logging.use_mlflow:
             try:
                 mlflow.set_experiment(self.config.logging.experiment_name)
-                self.logger.success("✅ MLflow initialized")
+                self.logger.success("[SUCCESS] MLflow initialized")
             except Exception as e:
-                self.logger.warning(f"⚠️  MLflow initialization failed: {str(e)}")
+                self.logger.warning(f"[WARNING]  MLflow initialization failed: {str(e)}")
         
         # Weights & Biases setup
         if WANDB_AVAILABLE and self.config.logging.use_wandb:
@@ -196,9 +196,9 @@ class CellexTrainer:
                     project=self.config.logging.experiment_name,
                     config=self.config.__dict__
                 )
-                self.logger.success("✅ Weights & Biases initialized")
+                self.logger.success("[SUCCESS] Weights & Biases initialized")
             except Exception as e:
-                self.logger.warning(f"⚠️  Weights & Biases initialization failed: {str(e)}")
+                self.logger.warning(f"[WARNING]  Weights & Biases initialization failed: {str(e)}")
     
     def train(self, data_dir: str) -> Dict:
         """Main training function."""
@@ -229,10 +229,10 @@ class CellexTrainer:
             try:
                 resume_epoch = self.load_checkpoint(self.resume_from, model, optimizer, scheduler)
                 start_epoch = resume_epoch + 1
-                self.logger.info(f"🔄 Resuming training from epoch {start_epoch}")
+                self.logger.info(f"[PROGRESS] Resuming training from epoch {start_epoch}")
             except Exception as e:
-                self.logger.error(f"❌ Failed to resume from checkpoint: {str(e)}")
-                self.logger.info("🔄 Starting fresh training instead...")
+                self.logger.error(f"[ERROR] Failed to resume from checkpoint: {str(e)}")
+                self.logger.info("[PROGRESS] Starting fresh training instead...")
                 start_epoch = 1
         
         # Initialize early stopping
@@ -243,14 +243,14 @@ class CellexTrainer:
         
         # Setup graceful shutdown for interruption
         def signal_handler(signum, frame):
-            self.logger.info("\n⚠️ Training interruption requested (Ctrl+C)")
+            self.logger.info("\n[WARNING] Training interruption requested (Ctrl+C)")
             self.interrupted = True
             if self.interrupt_save_vars:
                 model_ref, optimizer_ref, scheduler_ref, current_epoch = self.interrupt_save_vars
-                self.logger.info(f"💾 Saving emergency checkpoint at epoch {current_epoch}")
+                self.logger.info(f"[SYMBOL] Saving emergency checkpoint at epoch {current_epoch}")
                 self._save_checkpoint(model_ref, optimizer_ref, scheduler_ref, current_epoch)
-                self.logger.success("✅ Emergency checkpoint saved!")
-            self.logger.info("💡 You can resume training later with --resume latest")
+                self.logger.success("[SUCCESS] Emergency checkpoint saved!")
+            self.logger.info("[SYMBOL] You can resume training later with --resume latest")
         
         signal.signal(signal.SIGINT, signal_handler)
         
@@ -265,7 +265,7 @@ class CellexTrainer:
             
             # Check for interruption
             if self.interrupted:
-                self.logger.info("🛑 Training stopped by user request")
+                self.logger.info("[SYMBOL] Training stopped by user request")
                 break
             
             # Training phase
@@ -287,11 +287,11 @@ class CellexTrainer:
             if val_metrics.get_accuracy() > self.best_val_accuracy:
                 self.best_val_accuracy = val_metrics.get_accuracy()
                 self._save_model(model, f"best_model_epoch_{epoch}.pth", val_metrics.get_accuracy())
-                self.logger.success(f"🏆 New best model saved! Accuracy: {val_metrics.get_accuracy():.4f}")
+                self.logger.success(f"[SYMBOL] New best model saved! Accuracy: {val_metrics.get_accuracy():.4f}")
             
             # Early stopping check
             if early_stopping(val_metrics.get_average_loss(), model):
-                self.logger.info(f"🛑 Early stopping triggered at epoch {epoch}")
+                self.logger.info(f"[SYMBOL] Early stopping triggered at epoch {epoch}")
                 break
             
             # Save checkpoint every 5 epochs and on the last epoch
@@ -380,7 +380,7 @@ class CellexTrainer:
     
     def _evaluate_model(self, model: nn.Module, test_loader, criterion) -> CellexMetrics:
         """Comprehensive model evaluation."""
-        self.logger.info("🧪 Running comprehensive evaluation...")
+        self.logger.info("[TEST] Running comprehensive evaluation...")
         
         model.eval()
         metrics = CellexMetrics()
@@ -466,11 +466,11 @@ class CellexTrainer:
         )
         
         # Detailed metrics
-        self.logger.info(f"📊 Train - Acc: {train_metrics.get_accuracy():.4f} | "
+        self.logger.info(f"[STATS] Train - Acc: {train_metrics.get_accuracy():.4f} | "
                         f"Prec: {train_metrics.get_precision():.4f} | "
                         f"Rec: {train_metrics.get_recall():.4f}")
         
-        self.logger.info(f"📊 Val   - Acc: {val_metrics.get_accuracy():.4f} | "
+        self.logger.info(f"[STATS] Val   - Acc: {val_metrics.get_accuracy():.4f} | "
                         f"Prec: {val_metrics.get_precision():.4f} | "
                         f"Rec: {val_metrics.get_recall():.4f} | "
                         f"F1: {val_metrics.get_f1_score():.4f}")
@@ -561,7 +561,7 @@ class CellexTrainer:
                 else:
                     raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
         
-        self.logger.info(f"📂 Loading checkpoint from: {checkpoint_path}")
+        self.logger.info(f"[FILE] Loading checkpoint from: {checkpoint_path}")
         
         try:
             checkpoint = torch.load(checkpoint_path, map_location=self.device)
@@ -587,14 +587,14 @@ class CellexTrainer:
                 'learning_rate': []
             })
             
-            self.logger.success(f"✅ Checkpoint loaded successfully!")
-            self.logger.info(f"📊 Resuming from epoch {self.current_epoch + 1}")
-            self.logger.info(f"🏆 Best validation accuracy so far: {self.best_val_accuracy:.2f}%")
+            self.logger.success(f"[SUCCESS] Checkpoint loaded successfully!")
+            self.logger.info(f"[STATS] Resuming from epoch {self.current_epoch + 1}")
+            self.logger.info(f"[SYMBOL] Best validation accuracy so far: {self.best_val_accuracy:.2f}%")
             
             return self.current_epoch
             
         except Exception as e:
-            self.logger.error(f"❌ Failed to load checkpoint: {str(e)}")
+            self.logger.error(f"[ERROR] Failed to load checkpoint: {str(e)}")
             raise
     
     def _log_final_results(self, results: Dict):
@@ -610,7 +610,7 @@ class CellexTrainer:
         self.logger.metric("Training Time", results['training_time'], "seconds")
         self.logger.metric("Total Epochs", results['total_epochs'], "")
         
-        self.logger.success("🎉 Training completed successfully!")
+        self.logger.success("[COMPLETE] Training completed successfully!")
 
 
 def main():
@@ -622,7 +622,7 @@ def main():
     data_dir = Path(config.data.processed_data_dir) / "unified"
     
     if not data_dir.exists():
-        trainer.logger.error("❌ Processed data not found!")
+        trainer.logger.error("[ERROR] Processed data not found!")
         trainer.logger.info("Please run data preprocessing first:")
         trainer.logger.info("python src/data/download_data.py")
         return
@@ -637,7 +637,7 @@ def main():
     with open(results_path, 'w') as f:
         json.dump(results, f, indent=2)
     
-    trainer.logger.success(f"✅ Results saved to {results_path}")
+    trainer.logger.success(f"[SUCCESS] Results saved to {results_path}")
 
 
 if __name__ == "__main__":

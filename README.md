@@ -4,15 +4,11 @@
 <br>
 
 <br>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" width="32" height="32"/>
 
-[![Python](https://img.shields.io/badge/python-3.8%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-
-<br>
-
-<br>
 ![Tests](https://img.shields.io/badge/tests-9%2F9%20passing-green)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-green)
-![Version](https://img.shields.io/badge/version-2.1.0-%2338257d?style=flat&labelColor=38257d&color=38257d)
+![Version](https://img.shields.io/badge/version-2.1.2-%2338257d?style=flat&labelColor=38257d&color=38257d)
 
 <p align="center">
     <img src="assets/cellex.png" alt="Caesar Logo" width="125" align="left">
