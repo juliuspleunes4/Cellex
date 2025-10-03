@@ -7,11 +7,9 @@
 
 ![Python Version](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat&logo=python&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.10%2B-ee4c2c?style=flat&logo=pytorch&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-18%20Test%20Functions-green?style=flat&logo=checkmarx&logoColor=white)
 ![Accuracy](https://img.shields.io/badge/Accuracy-98.45%25-brightgreen?style=flat&logo=target&logoColor=white)
 ![GPU Support](https://img.shields.io/badge/GPU-CUDA%2011.0%2B-76b900?style=flat&logo=nvidia&logoColor=white)
 ![Dataset](https://img.shields.io/badge/Dataset-29%2C264%20Images-orange?style=flat&logo=database&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=flat&logo=rocket&logoColor=white)
 ![Version](https://img.shields.io/badge/Version-2.4.0-%2338257d?style=flat&labelColor=38257d&color=38257d&logo=github&logoColor=white)
 
 <table>
