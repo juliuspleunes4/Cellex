@@ -4,6 +4,22 @@ CELLEX PERFORMANCE LOG
 This file tracks the performance results of the Cellex cancer detection model
 across different evaluation runs and test sessions.
 
+> TRANSPARENCY NOTE:
+> This performance log is maintained by the project maintainer (@juliuspleunes4) 
+> and reflects results from their trained models and evaluation sessions.
+> 
+> WHY IT'S INCLUDED IN THE OPEN-SOURCE REPO:
+> - Transparency: Show actual performance metrics to the community
+> - Reproducibility: Provide benchmark results for comparison
+> - Trust: Demonstrate real-world model performance openly
+> - Reference: Help contributors understand expected performance levels
+>
+> While this is an open-source project, these specific results reflect the 
+> maintainer's training environment, datasets, and computational resources.
+> Your results may vary based on your setup, data, and training configuration.
+
+> Note:
+
 ===============================================================================
 [1st Testcase - October 3, 2025]
 ===============================================================================
