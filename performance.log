@@ -1,0 +1,39 @@
+CELLEX PERFORMANCE LOG
+=====================
+
+This file tracks the performance results of the Cellex cancer detection model
+across different evaluation runs and test sessions.
+
+===============================================================================
+[1st Testcase - October 3, 2025]
+===============================================================================
+
+Script Used: tests/test_advanced_model.py
+Timestamp: 2025-10-03T20:21:48
+Model: EfficientNet-B0 (5,001,919 parameters)
+
+DATASET TESTED:
+- Total samples: 4,000 images
+- Healthy samples: 2,000
+- Cancer samples: 2,000  
+- Sources: Validation + Test sets (1,000 per class each)
+
+PERFORMANCE METRICS:
+- Overall Accuracy: 98.45% ⭐
+- Healthy Accuracy: 98.85%
+- Cancer Accuracy: 98.05%
+- Balanced Accuracy: 98.45%
+
+CONFIDENCE ANALYSIS:
+- Mean Confidence: 98.51%
+- Confidence Std: 5.63%
+- Correct Predictions Confidence: 98.84%
+- Incorrect Predictions Confidence: 77.59%
+
+ERROR ANALYSIS:
+- Total Errors: 62 out of 4,000
+- Error Rate: 1.55%
+- False Positives (Healthy → Cancer): 23
+- False Negatives (Cancer → Healthy): 39
+
+SUMMARY: Outstanding performance with 98.45% accuracy on 4,000 medical images!
