@@ -10,7 +10,7 @@
 ![Accuracy](https://img.shields.io/badge/Accuracy-99.28%25-brightgreen?style=flat&logo=target&logoColor=white)
 ![GPU Support](https://img.shields.io/badge/GPU-CUDA%2011.0%2B-76b900?style=flat&logo=nvidia&logoColor=white)
 ![Dataset](https://img.shields.io/badge/Dataset-29%2C264%20Images-orange?style=flat&logo=database&logoColor=white)
-![Version](https://img.shields.io/badge/Version-2.4.0-%2338257d?style=flat&labelColor=38257d&color=38257d&logo=github&logoColor=white)
+![Version](https://img.shields.io/badge/Version-2.5.0-%2338257d?style=flat&labelColor=38257d&color=38257d&logo=github&logoColor=white)
 
 <table>
 <tr>
