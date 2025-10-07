@@ -7,7 +7,7 @@
 
 ![Python Version](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat&logo=python&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.10%2B-ee4c2c?style=flat&logo=pytorch&logoColor=white)
-![Accuracy](https://img.shields.io/badge/Accuracy-98.45%25-brightgreen?style=flat&logo=target&logoColor=white)
+![Accuracy](https://img.shields.io/badge/Accuracy-99.28%25-brightgreen?style=flat&logo=target&logoColor=white)
 ![GPU Support](https://img.shields.io/badge/GPU-CUDA%2011.0%2B-76b900?style=flat&logo=nvidia&logoColor=white)
 ![Dataset](https://img.shields.io/badge/Dataset-29%2C264%20Images-orange?style=flat&logo=database&logoColor=white)
 ![Version](https://img.shields.io/badge/Version-2.4.0-%2338257d?style=flat&labelColor=38257d&color=38257d&logo=github&logoColor=white)
@@ -29,7 +29,7 @@
 
 ---
 
-> <span style="color:green"><strong>✅ Quick Note:</strong> Early Cellex models are already demonstrating <strong>98.45% accuracy</strong> in internal validation, ran on thousands of tests, highlighting strong potential for clinical deployment!</span>
+> <span style="color:green"><strong>✅ Quick Note:</strong> Early Cellex models are already demonstrating <strong>99.28% balanced accuracy</strong> in rigorous random sampling validation across 5,000+ test images, highlighting exceptional potential for clinical deployment!</span>
 
 ## 🌟 Our Mission
 
@@ -481,6 +481,9 @@ print(f"Healthy Probability: {result['probabilities']['normal']:.3f}")
 ### Testing & Validation
 
 ```bash
+# Run comprehensive system tests
+python tests/run_all_tests.py
+
 # Run unit tests
 python -m pytest tests/
 
@@ -493,6 +496,89 @@ python -m pytest --cov=src tests/
 # Integration tests
 python -m pytest tests/integration/ -v
 ```
+
+### 🎯 Performance Testing & Validation
+
+Cellex provides advanced performance testing capabilities with **statistical rigor** for medical AI validation:
+
+#### 🏆 Gold Standard Performance Testing
+```bash
+# True Random Sampling Performance Test (RECOMMENDED)
+python random_performance_test.py
+
+# Performs 5 independent tests with random image selection
+# Tests 500 images per class per test (5,000 total samples)
+# Provides statistical analysis with confidence intervals
+# Generates comprehensive JSON reports
+```
+
+**Example Output:**
+```
+🎯 BALANCED ACCURACY: 99.28% ± 0.19%
+📊 Individual Results: [99.50%, 99.50%, 99.20%, 99.00%, 99.20%]
+📈 95% Confidence Interval: 98.90% - 99.66%
+✅ EXCELLENT: Very consistent performance across different image samples
+```
+
+#### ⚡ Quick Performance Testing
+```bash
+# Fast Performance Check (deterministic method)
+python run_performance_test.py
+
+# Single test run with 1,000 samples per class
+# Uses consistent sample selection for reproducible results
+# Good for development and quick validation
+```
+
+#### 📊 Performance Tracking & History
+
+All performance results are automatically tracked in `performance.log`:
+
+```bash
+# View performance history
+cat performance.log
+
+# Performance log includes:
+# - Timestamp and test methodology
+# - Statistical metrics with confidence intervals  
+# - Individual test results and variation analysis
+# - Comparison between test methodologies
+# - Complete audit trail of model performance
+```
+
+**Performance Log Features:**
+- 🏆 **Gold Standard Results**: 99.28% ± 0.19% balanced accuracy
+- 📈 **Statistical Rigor**: Confidence intervals and variation analysis
+- 🔍 **Method Comparison**: Deterministic vs random sampling results
+- 📝 **Complete Audit Trail**: All test runs with timestamps
+- 🎯 **Official Metrics**: Use for research publications and clinical validation
+
+#### 🎚️ Performance Testing Options
+
+```bash
+# Customize random sampling tests
+python random_performance_test.py
+# Default: 5 tests × 500 samples per class = 5,000 total samples
+
+# For different sample sizes, modify in the script:
+# - Change `num_tests` for more/fewer independent tests
+# - Change `samples_per_class` for larger/smaller sample sets
+# - Results saved to results/random_sampling_analysis_[timestamp].json
+```
+
+#### 📋 Understanding Performance Metrics
+
+**Primary Metric: Balanced Accuracy (99.28%)**
+- Accounts for class imbalance (36.6% healthy vs 63.4% cancer)
+- Equally weights healthy and cancer detection performance
+- Medical standard for diagnostic AI evaluation
+- Use this number for official performance reporting
+
+**Additional Metrics:**
+- **Overall Accuracy**: Raw accuracy across all samples
+- **Healthy Accuracy**: Sensitivity for healthy tissue detection
+- **Cancer Accuracy**: Sensitivity for cancer detection  
+- **Confidence Analysis**: Model prediction confidence statistics
 
 ### Configuration Requirements
 
