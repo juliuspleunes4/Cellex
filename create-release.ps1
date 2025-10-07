@@ -324,7 +324,7 @@ function Create-GitHubRelease {
     
     Write-ColorOutput "🚀 Creating GitHub release..." $ColorInfo
     
-    $releaseTitle = "$ProjectName v$Version - Medical-Grade Cancer Detection"
+    $releaseTitle = "cellex-v$Version.zip"
     
     # Prepare release command
     $releaseArgs = @(
