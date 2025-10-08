@@ -10,6 +10,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Minor version** (second digit) is incremented and patch reset when a new feature is added (e.g., `2.4.6` → `2.5.0`).
 > - **Patch version** (third digit) is incremented for updates or changes to existing features (e.g., `2.4.5` → `2.4.6`).
 
+## [2.5.1] - 2025-10-08
+
+### 📚 **DOCUMENTATION FIXES: README + LICENSE Improvements**
+
+### 🔧 Fixed
+- **README.md Documentation Updates**:
+  - Fixed accuracy terminology: Changed "balanced accuracy" to "accuracy" for consistency in quick note section
+  - Corrected company branding: Updated "CellexNet™ architecture" to "Cellex™ architecture" 
+  - Enhanced development transparency: Updated development status from "240K+ verified medical images" to "thousands of verified medical images"
+  - Added realistic expectations disclaimer: "Some of these goals haven't been achieved yet, but we can, with your help!"
+  - Improved performance tracking clarity: Changed "All performance results" to "All *official* performance results"
+  - Updated milestone terminology: Changed "Upcoming Milestones" to "Upcoming Goals" for better clarity
+  - Corrected copyright notice: Simplified from "Cellex AI" to "Cellex" for brand consistency
+
+- **LICENSE.md Enhancements**:
+  - Enhanced license documentation with additional clarifications
+
+### 📊 Impact
+- **Improved Documentation Accuracy**: Fixed terminology inconsistencies across README
+- **Enhanced Brand Consistency**: Unified naming conventions throughout documentation  
+- **Better User Expectations**: Added transparency about development status and goals
+- **Professional Polish**: Corrected various formatting and wording improvements
+
 ## [2.5.0] - 2025-10-07
 
 ### 🎯 **ADVANCED PERFORMANCE VALIDATION: True Random Sampling & Statistical Analysis**

@@ -10,7 +10,7 @@
 ![Accuracy](https://img.shields.io/badge/Accuracy-99.28%25-brightgreen?style=flat&logo=target&logoColor=white)
 ![GPU Support](https://img.shields.io/badge/GPU-CUDA%2011.0%2B-76b900?style=flat&logo=nvidia&logoColor=white)
 ![Dataset](https://img.shields.io/badge/Dataset-29%2C264%20Images-orange?style=flat&logo=database&logoColor=white)
-![Version](https://img.shields.io/badge/Version-2.5.0-%2338257d?style=flat&labelColor=38257d&color=38257d&logo=github&logoColor=white)
+![Version](https://img.shields.io/badge/Version-2.5.1-%2338257d?style=flat&labelColor=38257d&color=38257d&logo=github&logoColor=white)
 
 <table>
 <tr>
@@ -21,7 +21,7 @@
 
 ## Leading the Future of Diagnostic Imaging
 
-**Cellex** is a pioneering medical technology company specializing in AI-powered diagnostic solutions for healthcare providers worldwide. Our flagship cancer detection platform leverages cutting-edge deep learning to assist radiologists in early cancer detection, improving patient outcomes through faster, more accurate diagnoses.
+**Cellex** is an open-source pioneering medical technology project specializing in AI-powered diagnostic solutions for healthcare providers worldwide. Our flagship cancer detection platform leverages cutting-edge deep learning to assist radiologists in early cancer detection, improving patient outcomes through faster, more accurate diagnoses.
 
 </td>
 </tr>
@@ -29,7 +29,7 @@
 
 ---
 
-> <span style="color:green"><strong>✅ Quick Note:</strong> Early Cellex models are already demonstrating <strong>99.28% balanced accuracy</strong> in rigorous random sampling validation across 5,000+ test images, highlighting exceptional potential for clinical deployment!</span>
+> <span style="color:green"><strong>✅ Quick Note:</strong> Early Cellex models are already demonstrating <strong>99.28% accuracy</strong> in rigorous random sampling validation across 5,000+ test images, highlighting exceptional potential for clinical deployment!</span>
 
 ## 🌟 Our Mission
 
@@ -55,12 +55,14 @@ Our flagship AI platform represents advanced research in cancer detection, proce
 - **>95% Specificity** to minimize false positives
 - **<2 Second Inference Time** for real-time clinical workflows
 
-> **Development Status**: Platform framework complete. Model training in progress using 240K+ verified medical images.
+> **Development Status**: Platform framework complete. Model training in progress using thousands of verified medical images.
 
 ## 🏆 Technology Excellence
 
+> Quick Note: Some of these goals haven't been achieved yet, but we can, with your help!
+
 ### Advanced AI Architecture
-Our proprietary **CellexNet™** architecture combines:
+Our proprietary **Cellex™** architecture combines:
 - **EfficientNet Foundation** with medical-optimized attention mechanisms
 - **Ensemble Intelligence** leveraging multiple specialized models
 - **Focal Loss Optimization** for rare disease detection
@@ -532,7 +534,7 @@ python run_performance_test.py
 
 #### 📊 Performance Tracking & History
 
-All performance results are automatically tracked in `performance.log`:
+All *official* performance results are tracked in `performance.log`:
 
 ```bash
 # View performance history
@@ -626,7 +628,7 @@ MLFLOW_TRACKING_URI=http://localhost:5000
 - **Training Pipeline**: Professional-grade system with automatic model saving
 - **Prediction System**: Clinical-ready inference with attention visualization
 
-### 📋 Upcoming Milestones
+### 📋 Upcoming Goals
 - **Q4 2025**: Complete initial model training and validation
 - **Q1 2026**: Clinical trial deployment preparation  
 - **Q2 2026**: Regulatory submission (FDA 510k)
@@ -762,5 +764,5 @@ Special thanks to all medical professionals and patients whose data and expertis
 
 ---
 
-**© 2025 Cellex AI. All rights reserved.**  
+**© 2025 Cellex. All rights reserved.**  
 *Advancing Healthcare Through Intelligent Technology*
