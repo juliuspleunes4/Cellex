@@ -55,12 +55,14 @@ Our flagship AI platform represents advanced research in cancer detection, proce
 - **>95% Specificity** to minimize false positives
 - **<2 Second Inference Time** for real-time clinical workflows
 
-> **Development Status**: Platform framework complete. Model training in progress using 240K+ verified medical images.
+> **Development Status**: Platform framework complete. Model training in progress using thousands of verified medical images.
 
 ## 🏆 Technology Excellence
 
+> Quick Note: Some of these goals haven't been achieved yet, but we can, with your help!
+
 ### Advanced AI Architecture
-Our proprietary **CellexNet™** architecture combines:
+Our proprietary **Cellex™** architecture combines:
 - **EfficientNet Foundation** with medical-optimized attention mechanisms
 - **Ensemble Intelligence** leveraging multiple specialized models
 - **Focal Loss Optimization** for rare disease detection
@@ -532,7 +534,7 @@ python run_performance_test.py
 
 #### 📊 Performance Tracking & History
 
-All performance results are automatically tracked in `performance.log`:
+All *official* performance results are tracked in `performance.log`:
 
 ```bash
 # View performance history
@@ -626,7 +628,7 @@ MLFLOW_TRACKING_URI=http://localhost:5000
 - **Training Pipeline**: Professional-grade system with automatic model saving
 - **Prediction System**: Clinical-ready inference with attention visualization
 
-### 📋 Upcoming Milestones
+### 📋 Upcoming Goals
 - **Q4 2025**: Complete initial model training and validation
 - **Q1 2026**: Clinical trial deployment preparation  
 - **Q2 2026**: Regulatory submission (FDA 510k)
