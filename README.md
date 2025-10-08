@@ -764,5 +764,5 @@ Special thanks to all medical professionals and patients whose data and expertis
 
 ---
 
-**© 2025 Cellex AI. All rights reserved.**  
+**© 2025 Cellex. All rights reserved.**  
 *Advancing Healthcare Through Intelligent Technology*
