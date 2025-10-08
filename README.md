@@ -29,7 +29,7 @@
 
 ---
 
-> <span style="color:green"><strong>✅ Quick Note:</strong> Early Cellex models are already demonstrating <strong>99.28% balanced accuracy</strong> in rigorous random sampling validation across 5,000+ test images, highlighting exceptional potential for clinical deployment!</span>
+> <span style="color:green"><strong>✅ Quick Note:</strong> Early Cellex models are already demonstrating <strong>99.28% accuracy</strong> in rigorous random sampling validation across 5,000+ test images, highlighting exceptional potential for clinical deployment!</span>
 
 ## 🌟 Our Mission
 
